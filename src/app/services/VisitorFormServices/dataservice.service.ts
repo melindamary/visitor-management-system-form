@@ -1,0 +1,61 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { PurposeResponse } from '../../Models/IPurposeResponse';
+
+
+import { map } from 'rxjs/operators';
+import { DeviceResponse } from '../../Models/IDeviceResponse';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataserviceService {
+
+  constructor(private http:HttpClient) { }
+ 
+
+  getContactPerson(): Observable<string[]> {
+    const apiUrl = "https://localhost:7121/Visitor/GetPersonInContact";
+    return this.http.get<{ $id: string, $values: string[] }>(apiUrl).pipe(
+      map((response: { $id: string, $values: string[] }) => response.$values)
+    );
+  }
+       
+    
+  getVisitPurpose(): Observable<PurposeResponse[]> {
+    const apiUrl = "https://localhost:7121/PurposeOfVisit/GetPurposes/get-purposes-id-Name";
+    return this.http.get<{ $id: string, $values: PurposeResponse[] }>(apiUrl).pipe(
+      map(response => response.$values)
+    );
+  }
+      
+  getDevice():Observable<DeviceResponse[]>{
+    const apiUrl="https://localhost:7121/Device/GetItems/get-device-id-name";
+    return this.http.get<{ $id: string, $values: DeviceResponse[] }>(apiUrl).pipe(
+      map(response => response.$values)
+    );
+   }
+
+   createVisitorAndAddItem(visitor:any):Observable<any[]>{
+    console.log("log details",visitor);
+    visitor.OfficeLocationId = 18;
+    const apiUrl="https://localhost:7121/Visitor/CreateVisitorAndAddItem/create-and-add-item";
+     return this.http.post<any>(apiUrl,visitor);
+   }
+
+  
+addPurpose(purpose: string): Observable<PurposeResponse> {
+  const apiUrl = "https://localhost:7121/Purpose/PostPurpose"; // Adjust URL as per your API endpoint
+
+  return this.http.post<PurposeResponse>(apiUrl, { purposeName: purpose });
+}
+addDevice(device: { deviceName: string }): Observable<DeviceResponse> {
+  return this.http.post<DeviceResponse>('https://localhost:7121/Device/PostDevice', device);
+}
+   
+   
+
+};
+

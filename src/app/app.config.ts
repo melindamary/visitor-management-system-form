@@ -6,8 +6,10 @@ import { DatePipe } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideHttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
+
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }),provideHttpClient(),
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }),provideHttpClient(),MessageService,
     provideNativeDateAdapter(), provideRouter(routes),DatePipe, provideAnimationsAsync()]
 };

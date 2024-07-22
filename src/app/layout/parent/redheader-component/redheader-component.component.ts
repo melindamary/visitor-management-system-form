@@ -8,7 +8,8 @@ import { DatePipe } from '@angular/common';
   styleUrl: './redheader-component.component.scss'
 })
 export class RedheaderComponentComponent {
-  currentDate!: string;
+  currentDateandTime!: string;
+  
 
   constructor(private datePipe: DatePipe) {}
 
@@ -18,6 +19,7 @@ export class RedheaderComponentComponent {
   }
 
   updateDate() {
-    this.currentDate = this.datePipe.transform(new Date(), 'dd/MM/YYYY HH:mm:ss')!;
+    this.currentDateandTime = this.datePipe.transform(new Date(), 'dd-MM-yyyy   HH:mm:ss')!;
+    
   }
 }

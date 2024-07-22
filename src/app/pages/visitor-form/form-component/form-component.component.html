@@ -1,128 +1,28 @@
-<!-- <form class="visitorForm">
-    <div class="row">
-        <div class="col">
-            <label  class="inputLabel">Name<span class="astrik">*</span> </label>
-            <mat-form-field appearance="outline" class="smallInput">
-                <mat-label>Enter the Name</mat-label>
-                <input matInput  >
-            </mat-form-field>
-        </div>
-        <div class="col">
-            <label  class="inputLabel">Phone Number<span class="astrik">*</span> </label>
-            <mat-form-field appearance="outline" class="smallInput">
-                <mat-label>Enter the Phone Number</mat-label>
-                <input matInput  >
-            </mat-form-field>
-        </div>
-    </div>
-    <div class="row" >
-        <div class="col">
-            <label  class="inputLabel">Whom to Meet<span class="astrik">*</span> </label>
-            <mat-form-field appearance="outline" class="smallInput">
-                <mat-label>Enter the name of the host</mat-label>
-                <input matInput  >
-            </mat-form-field>
-        </div>
-        <div class="col">
-            <label  class="inputLabel">Venue<span class="astrik">*</span> </label>
-            <mat-form-field appearance="outline" class="smallInput">
-                <mat-label>Select a Venue</mat-label>
-                <mat-select>
-                    <mat-option value="one">First option</mat-option>
-                    <mat-option value="two">Second option</mat-option>
-                  </mat-select>
-            </mat-form-field>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-          <label class="inputLabel">Purpose of Visit<span class="astrik">*</span> </label>
-          <mat-form-field appearance="outline" class="largeInput">
-            <mat-label>Select an Item</mat-label>
-            <mat-select [(value)]="selectedPurpose" (selectionChange)="onPurposeChange($event.value)">
-              <mat-option value="one">First option</mat-option>
-              <mat-option value="two">Others</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
-      
-      <div *ngIf="showPurposeOtherInput">
-        <div class="row">
-          <mat-form-field appearance="outline" class="mediumInput">
-            <mat-label>Specify Other Purpose of Visit</mat-label>
-            <input matInput placeholder="Enter details">
-          </mat-form-field>
-        </div>
-      </div>
-      
-      <div class="row" *ngFor="let item of items; let i = index">
-        <div class="col">
-          <label class="inputLabel">Items Carried<span class="astrik">*</span> </label>
-          <mat-form-field appearance="outline" class="mediumInput">
-            <mat-label>Select an Item</mat-label>
-            <mat-select [(value)]="item.selectedItem" (selectionChange)="onItemChange($event.value, i)">
-              <mat-option value="one">First option</mat-option>
-              <mat-option value="two">Others</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div class="col">
-          <div class="material-symbols-outlined astrik plus" (click)="addItem()">
-            add_circle
-          </div>
-        </div>
-      </div>
-      
-      <div *ngIf="showItemOtherInput">
-        <div class="row">
-          <mat-form-field appearance="outline" class="mediumInput">
-            <mat-label>Specify Other Item</mat-label>
-            <input matInput placeholder="Enter details">
-          </mat-form-field>
-        </div>
-        <div class="row">
-          <mat-form-field appearance="outline" class="mediumInput">
-            <mat-label>Enter Serial Number</mat-label>
-            <input matInput placeholder="Enter details">
-          </mat-form-field>
-        </div>
-      </div>
-      
-    <div class="row">
-        <mat-checkbox class="example-margin">I confirm, I have read and agree to Experion Technologies'<a href="#"> Privacy Policy </a>and consent to sharing my information.</mat-checkbox>
-    </div>
-    <div class="row">
-        
-        <div class="col">
-            <button class="button button3" >
-                <span class="material-symbols-outlined camera"> photo_camera</span>
-                Take Photo<span class="astrik">*</span></button>
-                
-        </div>
-        <div class="col">
-        <button class="button button3" routerLink="/thankyou" >
-          
-           Submit</button>
-    </div>
-    </div>
 
-</form> -->
 <form class="visitorForm" [formGroup]="addvisitorForm" (ngSubmit)="onSubmit()">
+  <p-toast />
   <div class="row mb-3">
       <div class="col">
           <label class="inputLabel">Name<span class="astrik">*</span></label>
-          <div class="form-floating smallInput">
-            <input type="text" class="form-control" formControlName="name" id="name" placeholder="Enter the Name"/>
+          <p-floatLabel>
+            <input  class="form-control smallInput p-inputtext" formControlName="name" id="name"
+             placeholder="" required/>
             <label for="name">Enter the Name</label>
-        </div>
+            <div *ngIf="addvisitorForm.get('name')?.hasError('required')&& addvisitorForm.get('name')?.touched" class="astrik">
+              *Name is required.
+            </div>
+          </p-floatLabel>
       </div>
       <div class="col">
           <label class="inputLabel">Phone Number<span class="astrik">*</span></label>
-          <div class="form-floating smallInput">             
-              <input type="text" class="form-control" id="phoneNumber" formControlName="phoneNumber" placeholder="Enter the Phone Number">
+          <p-floatLabel>             
+              <input type="text"  class="form-control smallInput p-inputtext" id="phoneNumber" name="phoneNumber" required
+              formControlName="phoneNumber" placeholder="">
               <label for="phoneNumber">Enter the Phone Number</label>
-          </div>
+              <div *ngIf="addvisitorForm.get('phoneNumber')?.hasError('required')&& addvisitorForm.get('phoneNumber')?.touched" class="astrik">
+                *Phone Number is required.
+              </div>
+            </p-floatLabel>
       </div>
   </div>
   <div class="row mb-3">
@@ -132,114 +32,157 @@
             <p-floatLabel>
               <p-autoComplete 
   class="largeInput"
-  [(ngModel)]="selectedContact" 
+ name="personInContact"
   formControlName="personInContact"
   [dropdown]="true" 
   [suggestions]="filteredContacts" 
   (completeMethod)="filterContact($event)" 
   inputId="autocomplete-input"
-  placeholder=" "></p-autoComplete>
- <!-- Placeholder added to trigger floating label -->
+  placeholder=" "
+  required></p-autoComplete>
+
               <label for="autocomplete-input">Enter the name of the host</label>
-          </p-floatLabel>   
+          </p-floatLabel>  
+          <div *ngIf="addvisitorForm.get('personInContact')?.hasError('required')&& addvisitorForm.get('personInContact')?.touched"class="astrik">
+            *Name of the host is required.
+          </div> 
           </div>
       </div>
      
   </div>
   <div class="row mb-3">
       <div class="col">
-          <label class="inputLabel">Purpose of Visit<span class="astrik">*</span></label><br>
-          
-          <p-autoComplete class="largeInput"
-          [(ngModel)]="selectedPurpose"
-          (onSelect)="onPurposeChange($event)"
+          <label class="inputLabel">Purpose of Visit<span class="astrik">*</span></label><br>    
+          <p-floatLabel>      
+          <p-autoComplete class="largeInput"          
           [dropdown]="true"
           [suggestions]="filteredPurposes"
           (completeMethod)="filterPurpose($event)"
-          field="name"
+          field="purposeName"
+          name="purposeofvisit"
           inputId="purpose-autocomplete-input"
-          formControlName="purposeofvisit">
-</p-autoComplete><!-- Placeholder added to trigger floating label -->
-           
+          formControlName="purposeofvisit"
+          (keyup)="onKeyUpHandlerPurpose($event)"
+          (onSelect)="onPurposeChange($event)"
+         >
+        </p-autoComplete>
+        <label for="autocomplete-input">Enter the name of the Purpose of Visit</label>
+      </p-floatLabel> <!-- Placeholder added to trigger floating label -->
+        <div *ngIf="addvisitorForm.get('purposeofvisitId')?.hasError('required')&& addvisitorForm.get('purposeofvisitId')?.touched" class="astrik">
+          *Name of the purpose is required.
+        </div> 
       </div>
   </div>
-  <!-- <div class="form-floating largeInput">
-              <label for="purpose">Select an Item</label>
-              <select class="form-control" id="purpose" >
-                 [(ngModel)]="selectedPurpose" (ngModelChange)="onPurposeChange($event)" 
-                  <option value="one">First option</option>
-                  <option value="two">Others</option>
-              </select>
-          </div> 
-  <div *ngIf="showPurposeOtherInput">
-      <div class="row mb-3">
-          <div class="form-floating mediumInput">
-              <label for="otherPurpose">Specify Other Purpose of Visit</label>
-              <input type="text" class="form-control" id="otherPurpose" placeholder="Enter details">
-          </div>
-      </div>
-  </div>
-  --> 
+
   
     <div formArrayName="items">
       <div *ngFor="let item of items.controls; let i = index" [formGroupName]="i">
         <div class="row mb-3">
           <div class="col">
-            <label class="inputLabel">Items Carried<span class="astrik">*</span></label>
-            <p-autoComplete class="customInput"
-                            [(ngModel)]="items.at(i).value.selectedItem"
+            <label class="inputLabel">Device Carried<span class="astrik">*</span></label>
+          <p-floatLabel> 
+            <p-autoComplete class="customInput"                            
                             (onSelect)="onItemChange($event, i)"
+                            (keyup)="onKeyUpHandlerDevice($event, i)"
                             [dropdown]="true"
-                            [suggestions]="filteredItem"
+                            [suggestions]="filteredDevice"
                             (completeMethod)="filterItem($event)"
-                            field="itemName"
+                            field="deviceName"
+                            name="Device"
                             inputId="autocomplete-input"
-                            formControlName="itemscarried">
+                            formControlName="Device"
+                            required>
             </p-autoComplete>
+            <label for="autocomplete-input">Enter the Device Carried</label>
+          </p-floatLabel> 
+            <div *ngIf="item.get('Device')?.hasError('required') && item.get('Device')?.touched" class="astrik">
+              *Device is required.
+            </div>
           </div>
+         <!-- <div>
+          <button (click)="checkPermission()">checkPermission</button>
+         </div> -->
+         <!-- <div *ngIf="camData">
+          <webcam [trigger]="$trigger" (imageCapture)="capture($event)"></webcam>
+          <button (click)="captureImage()">show</button>
+         </div>
+         <div>
+          <div *ngIf="capturedImage">
+            <img [src]="capturedImage">
+          </div>
+         </div> -->
+       
           <div class="col d-flex align-items-end">
-            <i class="material-icons astrik plus" (click)="addItem()">add_circle</i>
+           
+              <i class="material-icons astrik plus" (click)="addItem()">add_circle</i>
+            
           </div>
+          
         </div>
   
         <div class="row mb-3" *ngIf="items.at(i).value.showItemOtherInput">
-          <div class="mediumInput">
-            <label for="serialNumber">Enter Serial Number for {{ items.at(i).value.selectedItem.itemName }}</label>
-            <input type="text" class="form-control" formControlName="itemSerialnumber" id="serialNumber" placeholder="Enter details">
+          <div class="">
+            <label class="inputLabelSerial" for="serialNumber">Enter Serial Number {{ items.at(i).value.deviceName }}</label>
+            
+            <input type="text" class="form-control mediumInput p-inputtext" name="DeviceSerialnumber" required formControlName="DeviceSerialnumber" id="serialNumber" placeholder="">
+            <div *ngIf="item.get('DeviceSerialnumber')?.hasError('required') && item.get('DeviceSerialnumber')?.touched" class="astrik">
+              *Serial Number is required.
+            </div>
           </div>
         </div>
   
-        <div class="row mb-3">
-          
-        </div>
+      
       </div>
     </div>
-   
-  
- 
-  
-  
   
   <div class="row mb-3">
       <div class="form-check">
-          <input class="form-check-input" formControlName="policy" type="checkbox" id="privacyPolicy">
+          <input class="form-check-input"  formControlName="policy" type="checkbox" id="privacyPolicy" required>
           <label class="form-check-label" for="privacyPolicy">
               I confirm, I have read and agree to Experion Technologies'<a href="#"> Privacy Policy </a>and consent to sharing my information.
           </label>
+          <div *ngIf="addvisitorForm.get('policy')?.hasError('required') && addvisitorForm.get('policy')?.touched" class="astrik">
+            *Please indicate your confirmation..
+          </div>
       </div>
   </div>
   <div class="row mb-3">
-      <div class="col">
-          <button class=" button3">
+      <!-- <div class="col">
+        <button (click)="checkPermission()" class=" button3" type="button">
+         Permission
+      </button>
+        <div *ngIf="camData">
+          <webcam [trigger]="$trigger" (imageCapture)="capture($event)"></webcam>
+          <button class=" button3"(click)="captureImage()" type="button">
               <i class="material-icons  camera">photo_camera</i>
               Take Photo<span class="astrik">*</span>
           </button>
+        </div>
+        <div>
+         <div *ngIf="capturedImage">
+           <img [src]="capturedImage" width="500px" height="500px">
+         </div>
+        </div>
+      </div> -->
+      <div class="col">
+        <button class=" button3"(click)="openDialog()" type="button">
+          <i class="material-icons  camera">photo_camera</i>
+           Photo<span class="astrik-white">*</span>
+      </button>
+       
+      <div *ngIf="capturedImage">
+        <img [src]="capturedImage.imageAsDataUrl">
+      </div>
       </div>
       <div class="col">
+        
           <button class=" button3" type="submit">
               Submit
           </button>
       </div>
+     
   </div>
+  
 </form>
-<!-- routerLink="/thankyou" -->
+
+<!-- [ngClass]="{ 'plusBtnHide': !isItemEntered(i) }" -->
