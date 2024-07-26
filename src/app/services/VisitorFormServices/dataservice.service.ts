@@ -40,14 +40,14 @@ export class DataserviceService {
 
    createVisitorAndAddItem(visitor:any):Observable<any[]>{
     console.log("log details",visitor);
-    visitor.OfficeLocationId = 18;
+    visitor.OfficeLocationId = 1;
     const apiUrl="https://localhost:7121/Visitor/CreateVisitorAndAddItem/create-and-add-item";
      return this.http.post<any>(apiUrl,visitor);
    }
 
   
 addPurpose(purpose: string): Observable<PurposeResponse> {
-  const apiUrl = "https://localhost:7121/Purpose/PostPurpose"; // Adjust URL as per your API endpoint
+  const apiUrl = "https://localhost:7121/PurposeOfVisit/PostPurpose"; // Adjust URL as per your API endpoint
 
   return this.http.post<PurposeResponse>(apiUrl, { purposeName: purpose });
 }

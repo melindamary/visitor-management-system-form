@@ -23,8 +23,8 @@ import {
   ɵɵprojection,
   ɵɵprojectionDef
 } from "./chunk-ASFWULK7.js";
-import "./chunk-KT3RQDJZ.js";
 import "./chunk-LMFWYZLC.js";
+import "./chunk-KT3RQDJZ.js";
 import "./chunk-RVQ3RH6Y.js";
 
 // node_modules/primeng/fesm2022/primeng-floatlabel.mjs

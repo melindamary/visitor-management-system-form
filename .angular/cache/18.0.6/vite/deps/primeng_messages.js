@@ -74,8 +74,8 @@ import {
   ɵɵtext,
   ɵɵtextInterpolate
 } from "./chunk-ASFWULK7.js";
-import "./chunk-KT3RQDJZ.js";
 import "./chunk-LMFWYZLC.js";
+import "./chunk-KT3RQDJZ.js";
 import {
   timer
 } from "./chunk-RVQ3RH6Y.js";
