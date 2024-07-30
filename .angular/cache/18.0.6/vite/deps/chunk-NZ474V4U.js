@@ -23,12 +23,15 @@ import {
   Optional,
   Output,
   PLATFORM_ID,
+  QueryList,
   Version,
   ViewChild,
   ViewEncapsulation$1,
   afterNextRender,
   booleanAttribute,
+  effect,
   inject,
+  isSignal,
   setClassMetadata,
   ɵɵInputTransformsFeature,
   ɵɵNgOnChangesFeature,
@@ -65,6 +68,7 @@ import {
   BehaviorSubject,
   Observable,
   Subject,
+  Subscription,
   __spreadProps,
   __spreadValues,
   combineLatest,
@@ -77,7 +81,8 @@ import {
   skip,
   startWith,
   take,
-  takeUntil
+  takeUntil,
+  tap
 } from "./chunk-RVQ3RH6Y.js";
 
 // node_modules/@angular/cdk/fesm2022/platform.mjs
@@ -140,6 +145,50 @@ var PlatformModule = _PlatformModule;
     args: [{}]
   }], null, null);
 })();
+var supportedInputTypes;
+var candidateInputTypes = [
+  // `color` must come first. Chrome 56 shows a warning if we change the type to `color` after
+  // first changing it to something else:
+  // The specified value "" does not conform to the required format.
+  // The format is "#rrggbb" where rr, gg, bb are two-digit hexadecimal numbers.
+  "color",
+  "button",
+  "checkbox",
+  "date",
+  "datetime-local",
+  "email",
+  "file",
+  "hidden",
+  "image",
+  "month",
+  "number",
+  "password",
+  "radio",
+  "range",
+  "reset",
+  "search",
+  "submit",
+  "tel",
+  "text",
+  "time",
+  "url",
+  "week"
+];
+function getSupportedInputTypes() {
+  if (supportedInputTypes) {
+    return supportedInputTypes;
+  }
+  if (typeof document !== "object" || !document) {
+    supportedInputTypes = new Set(candidateInputTypes);
+    return supportedInputTypes;
+  }
+  let featureTestInput = document.createElement("input");
+  supportedInputTypes = new Set(candidateInputTypes.filter((value) => {
+    featureTestInput.setAttribute("type", value);
+    return featureTestInput.type === value;
+  }));
+  return supportedInputTypes;
+}
 var supportsPassiveEvents;
 function supportsPassiveEventListeners() {
   if (supportsPassiveEvents == null && typeof window !== "undefined") {
@@ -254,12 +303,25 @@ function _isTestEnvironment() {
 }
 
 // node_modules/@angular/cdk/fesm2022/keycodes.mjs
+var TAB = 9;
 var ENTER = 13;
 var SHIFT = 16;
 var CONTROL = 17;
 var ALT = 18;
 var ESCAPE = 27;
 var SPACE = 32;
+var PAGE_UP = 33;
+var PAGE_DOWN = 34;
+var END = 35;
+var HOME = 36;
+var LEFT_ARROW = 37;
+var UP_ARROW = 38;
+var RIGHT_ARROW = 39;
+var DOWN_ARROW = 40;
+var ZERO = 48;
+var NINE = 57;
+var A = 65;
+var Z = 90;
 var META = 91;
 var MAC_META = 224;
 function hasModifierKey(event, ...modifiers) {
@@ -971,6 +1033,348 @@ function setMessageId(element, serviceId) {
     element.id = `${CDK_DESCRIBEDBY_ID_PREFIX}-${serviceId}-${nextId++}`;
   }
 }
+var ListKeyManager = class {
+  constructor(_items, injector) {
+    this._items = _items;
+    this._activeItemIndex = -1;
+    this._activeItem = null;
+    this._wrap = false;
+    this._letterKeyStream = new Subject();
+    this._typeaheadSubscription = Subscription.EMPTY;
+    this._vertical = true;
+    this._allowedModifierKeys = [];
+    this._homeAndEnd = false;
+    this._pageUpAndDown = {
+      enabled: false,
+      delta: 10
+    };
+    this._skipPredicateFn = (item) => item.disabled;
+    this._pressedLetters = [];
+    this.tabOut = new Subject();
+    this.change = new Subject();
+    if (_items instanceof QueryList) {
+      this._itemChangesSubscription = _items.changes.subscribe((newItems) => this._itemsChanged(newItems.toArray()));
+    } else if (isSignal(_items)) {
+      if (!injector && (typeof ngDevMode === "undefined" || ngDevMode)) {
+        throw new Error("ListKeyManager constructed with a signal must receive an injector");
+      }
+      this._effectRef = effect(() => this._itemsChanged(_items()), {
+        injector
+      });
+    }
+  }
+  /**
+   * Sets the predicate function that determines which items should be skipped by the
+   * list key manager.
+   * @param predicate Function that determines whether the given item should be skipped.
+   */
+  skipPredicate(predicate) {
+    this._skipPredicateFn = predicate;
+    return this;
+  }
+  /**
+   * Configures wrapping mode, which determines whether the active item will wrap to
+   * the other end of list when there are no more items in the given direction.
+   * @param shouldWrap Whether the list should wrap when reaching the end.
+   */
+  withWrap(shouldWrap = true) {
+    this._wrap = shouldWrap;
+    return this;
+  }
+  /**
+   * Configures whether the key manager should be able to move the selection vertically.
+   * @param enabled Whether vertical selection should be enabled.
+   */
+  withVerticalOrientation(enabled = true) {
+    this._vertical = enabled;
+    return this;
+  }
+  /**
+   * Configures the key manager to move the selection horizontally.
+   * Passing in `null` will disable horizontal movement.
+   * @param direction Direction in which the selection can be moved.
+   */
+  withHorizontalOrientation(direction) {
+    this._horizontal = direction;
+    return this;
+  }
+  /**
+   * Modifier keys which are allowed to be held down and whose default actions will be prevented
+   * as the user is pressing the arrow keys. Defaults to not allowing any modifier keys.
+   */
+  withAllowedModifierKeys(keys) {
+    this._allowedModifierKeys = keys;
+    return this;
+  }
+  /**
+   * Turns on typeahead mode which allows users to set the active item by typing.
+   * @param debounceInterval Time to wait after the last keystroke before setting the active item.
+   */
+  withTypeAhead(debounceInterval = 200) {
+    if (typeof ngDevMode === "undefined" || ngDevMode) {
+      const items = this._getItemsArray();
+      if (items.length > 0 && items.some((item) => typeof item.getLabel !== "function")) {
+        throw Error("ListKeyManager items in typeahead mode must implement the `getLabel` method.");
+      }
+    }
+    this._typeaheadSubscription.unsubscribe();
+    this._typeaheadSubscription = this._letterKeyStream.pipe(tap((letter) => this._pressedLetters.push(letter)), debounceTime(debounceInterval), filter(() => this._pressedLetters.length > 0), map(() => this._pressedLetters.join(""))).subscribe((inputString) => {
+      const items = this._getItemsArray();
+      for (let i = 1; i < items.length + 1; i++) {
+        const index = (this._activeItemIndex + i) % items.length;
+        const item = items[index];
+        if (!this._skipPredicateFn(item) && item.getLabel().toUpperCase().trim().indexOf(inputString) === 0) {
+          this.setActiveItem(index);
+          break;
+        }
+      }
+      this._pressedLetters = [];
+    });
+    return this;
+  }
+  /** Cancels the current typeahead sequence. */
+  cancelTypeahead() {
+    this._pressedLetters = [];
+    return this;
+  }
+  /**
+   * Configures the key manager to activate the first and last items
+   * respectively when the Home or End key is pressed.
+   * @param enabled Whether pressing the Home or End key activates the first/last item.
+   */
+  withHomeAndEnd(enabled = true) {
+    this._homeAndEnd = enabled;
+    return this;
+  }
+  /**
+   * Configures the key manager to activate every 10th, configured or first/last element in up/down direction
+   * respectively when the Page-Up or Page-Down key is pressed.
+   * @param enabled Whether pressing the Page-Up or Page-Down key activates the first/last item.
+   * @param delta Whether pressing the Home or End key activates the first/last item.
+   */
+  withPageUpDown(enabled = true, delta = 10) {
+    this._pageUpAndDown = {
+      enabled,
+      delta
+    };
+    return this;
+  }
+  setActiveItem(item) {
+    const previousActiveItem = this._activeItem;
+    this.updateActiveItem(item);
+    if (this._activeItem !== previousActiveItem) {
+      this.change.next(this._activeItemIndex);
+    }
+  }
+  /**
+   * Sets the active item depending on the key event passed in.
+   * @param event Keyboard event to be used for determining which element should be active.
+   */
+  onKeydown(event) {
+    const keyCode = event.keyCode;
+    const modifiers = ["altKey", "ctrlKey", "metaKey", "shiftKey"];
+    const isModifierAllowed = modifiers.every((modifier) => {
+      return !event[modifier] || this._allowedModifierKeys.indexOf(modifier) > -1;
+    });
+    switch (keyCode) {
+      case TAB:
+        this.tabOut.next();
+        return;
+      case DOWN_ARROW:
+        if (this._vertical && isModifierAllowed) {
+          this.setNextItemActive();
+          break;
+        } else {
+          return;
+        }
+      case UP_ARROW:
+        if (this._vertical && isModifierAllowed) {
+          this.setPreviousItemActive();
+          break;
+        } else {
+          return;
+        }
+      case RIGHT_ARROW:
+        if (this._horizontal && isModifierAllowed) {
+          this._horizontal === "rtl" ? this.setPreviousItemActive() : this.setNextItemActive();
+          break;
+        } else {
+          return;
+        }
+      case LEFT_ARROW:
+        if (this._horizontal && isModifierAllowed) {
+          this._horizontal === "rtl" ? this.setNextItemActive() : this.setPreviousItemActive();
+          break;
+        } else {
+          return;
+        }
+      case HOME:
+        if (this._homeAndEnd && isModifierAllowed) {
+          this.setFirstItemActive();
+          break;
+        } else {
+          return;
+        }
+      case END:
+        if (this._homeAndEnd && isModifierAllowed) {
+          this.setLastItemActive();
+          break;
+        } else {
+          return;
+        }
+      case PAGE_UP:
+        if (this._pageUpAndDown.enabled && isModifierAllowed) {
+          const targetIndex = this._activeItemIndex - this._pageUpAndDown.delta;
+          this._setActiveItemByIndex(targetIndex > 0 ? targetIndex : 0, 1);
+          break;
+        } else {
+          return;
+        }
+      case PAGE_DOWN:
+        if (this._pageUpAndDown.enabled && isModifierAllowed) {
+          const targetIndex = this._activeItemIndex + this._pageUpAndDown.delta;
+          const itemsLength = this._getItemsArray().length;
+          this._setActiveItemByIndex(targetIndex < itemsLength ? targetIndex : itemsLength - 1, -1);
+          break;
+        } else {
+          return;
+        }
+      default:
+        if (isModifierAllowed || hasModifierKey(event, "shiftKey")) {
+          if (event.key && event.key.length === 1) {
+            this._letterKeyStream.next(event.key.toLocaleUpperCase());
+          } else if (keyCode >= A && keyCode <= Z || keyCode >= ZERO && keyCode <= NINE) {
+            this._letterKeyStream.next(String.fromCharCode(keyCode));
+          }
+        }
+        return;
+    }
+    this._pressedLetters = [];
+    event.preventDefault();
+  }
+  /** Index of the currently active item. */
+  get activeItemIndex() {
+    return this._activeItemIndex;
+  }
+  /** The active item. */
+  get activeItem() {
+    return this._activeItem;
+  }
+  /** Gets whether the user is currently typing into the manager using the typeahead feature. */
+  isTyping() {
+    return this._pressedLetters.length > 0;
+  }
+  /** Sets the active item to the first enabled item in the list. */
+  setFirstItemActive() {
+    this._setActiveItemByIndex(0, 1);
+  }
+  /** Sets the active item to the last enabled item in the list. */
+  setLastItemActive() {
+    this._setActiveItemByIndex(this._getItemsArray().length - 1, -1);
+  }
+  /** Sets the active item to the next enabled item in the list. */
+  setNextItemActive() {
+    this._activeItemIndex < 0 ? this.setFirstItemActive() : this._setActiveItemByDelta(1);
+  }
+  /** Sets the active item to a previous enabled item in the list. */
+  setPreviousItemActive() {
+    this._activeItemIndex < 0 && this._wrap ? this.setLastItemActive() : this._setActiveItemByDelta(-1);
+  }
+  updateActiveItem(item) {
+    const itemArray = this._getItemsArray();
+    const index = typeof item === "number" ? item : itemArray.indexOf(item);
+    const activeItem = itemArray[index];
+    this._activeItem = activeItem == null ? null : activeItem;
+    this._activeItemIndex = index;
+  }
+  /** Cleans up the key manager. */
+  destroy() {
+    this._typeaheadSubscription.unsubscribe();
+    this._itemChangesSubscription?.unsubscribe();
+    this._effectRef?.destroy();
+    this._letterKeyStream.complete();
+    this.tabOut.complete();
+    this.change.complete();
+    this._pressedLetters = [];
+  }
+  /**
+   * This method sets the active item, given a list of items and the delta between the
+   * currently active item and the new active item. It will calculate differently
+   * depending on whether wrap mode is turned on.
+   */
+  _setActiveItemByDelta(delta) {
+    this._wrap ? this._setActiveInWrapMode(delta) : this._setActiveInDefaultMode(delta);
+  }
+  /**
+   * Sets the active item properly given "wrap" mode. In other words, it will continue to move
+   * down the list until it finds an item that is not disabled, and it will wrap if it
+   * encounters either end of the list.
+   */
+  _setActiveInWrapMode(delta) {
+    const items = this._getItemsArray();
+    for (let i = 1; i <= items.length; i++) {
+      const index = (this._activeItemIndex + delta * i + items.length) % items.length;
+      const item = items[index];
+      if (!this._skipPredicateFn(item)) {
+        this.setActiveItem(index);
+        return;
+      }
+    }
+  }
+  /**
+   * Sets the active item properly given the default mode. In other words, it will
+   * continue to move down the list until it finds an item that is not disabled. If
+   * it encounters either end of the list, it will stop and not wrap.
+   */
+  _setActiveInDefaultMode(delta) {
+    this._setActiveItemByIndex(this._activeItemIndex + delta, delta);
+  }
+  /**
+   * Sets the active item to the first enabled item starting at the index specified. If the
+   * item is disabled, it will move in the fallbackDelta direction until it either
+   * finds an enabled item or encounters the end of the list.
+   */
+  _setActiveItemByIndex(index, fallbackDelta) {
+    const items = this._getItemsArray();
+    if (!items[index]) {
+      return;
+    }
+    while (this._skipPredicateFn(items[index])) {
+      index += fallbackDelta;
+      if (!items[index]) {
+        return;
+      }
+    }
+    this.setActiveItem(index);
+  }
+  /** Returns the items as an array. */
+  _getItemsArray() {
+    if (isSignal(this._items)) {
+      return this._items();
+    }
+    return this._items instanceof QueryList ? this._items.toArray() : this._items;
+  }
+  /** Callback for when the items have changed. */
+  _itemsChanged(newItems) {
+    if (this._activeItem) {
+      const newIndex = newItems.indexOf(this._activeItem);
+      if (newIndex > -1 && newIndex !== this._activeItemIndex) {
+        this._activeItemIndex = newIndex;
+      }
+    }
+  }
+};
+var ActiveDescendantKeyManager = class extends ListKeyManager {
+  setActiveItem(index) {
+    if (this.activeItem) {
+      this.activeItem.setInactiveStyles();
+    }
+    super.setActiveItem(index);
+    if (this.activeItem) {
+      this.activeItem.setActiveStyles();
+    }
+  }
+};
 var _InteractivityChecker = class _InteractivityChecker {
   constructor(_platform) {
     this._platform = _platform;
@@ -4755,28 +5159,39 @@ var _MatInternalFormField = __MatInternalFormField;
 })();
 
 export {
-  coerceNumberProperty,
-  coerceArray,
-  coerceCssPixelValue,
-  coerceElement,
   Platform,
+  getSupportedInputTypes,
+  normalizePassiveListenerOptions,
   RtlScrollAxisType,
   supportsScrollBehavior,
   getRtlScrollAxisType,
   _getFocusedElementPierceShadowDom,
   _getEventTarget,
   _isTestEnvironment,
-  Directionality,
-  BidiModule,
+  TAB,
+  ENTER,
   ESCAPE,
+  UP_ARROW,
+  DOWN_ARROW,
   hasModifierKey,
+  coerceBooleanProperty,
+  coerceNumberProperty,
+  coerceArray,
+  coerceCssPixelValue,
+  coerceElement,
+  ObserversModule,
   BreakpointObserver,
   Breakpoints,
+  addAriaReferencedId,
+  removeAriaReferencedId,
+  ActiveDescendantKeyManager,
   InteractivityChecker,
   FocusTrapFactory,
   LiveAnnouncer,
   FocusMonitor,
   A11yModule,
+  Directionality,
+  BidiModule,
   VERSION2 as VERSION,
   AnimationCurves,
   AnimationDurations,
@@ -4823,4 +5238,4 @@ export {
   MatRippleLoader,
   _MatInternalFormField
 };
-//# sourceMappingURL=chunk-4K4SQJWH.js.map
+//# sourceMappingURL=chunk-NZ474V4U.js.map

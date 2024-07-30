@@ -29,8 +29,8 @@ import {
   ɵɵtemplate,
   ɵɵviewQuery
 } from "./chunk-ASFWULK7.js";
-import "./chunk-LMFWYZLC.js";
 import "./chunk-KT3RQDJZ.js";
+import "./chunk-LMFWYZLC.js";
 import "./chunk-RVQ3RH6Y.js";
 
 // node_modules/ngx-webcam/fesm2020/ngx-webcam.mjs

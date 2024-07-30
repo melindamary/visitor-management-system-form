@@ -29,6 +29,9 @@ export class CapturePhotoDialogComponentComponent {
   public handleImage(webcamImage: WebcamImage): void {
     this.webcamImage = webcamImage;
     this.adjustDialogHeight();
+    this._snackBar.open('Image Taken Successfully', 'Close', {
+       
+    });
   }
 
   public get triggerObservable(): Subject<void> {
@@ -45,7 +48,7 @@ export class CapturePhotoDialogComponentComponent {
 
   openSnackBar() {
     if(this.webcamImage){
-      this._snackBar.open('Successfullly taken Photo', 'Close', {
+      this._snackBar.open('successfully Uploaded Photo', 'Close', {
         horizontalPosition: this.horizontalPosition,
         verticalPosition: this.verticalPosition,
       });

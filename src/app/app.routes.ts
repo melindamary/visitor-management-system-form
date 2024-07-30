@@ -5,7 +5,7 @@ import { ThankyouPageComponent } from './pages/thankyou-page/thankyou-page.compo
 
 export const routes: Routes = [
     {
-        path:'visitorForm',component:VisitorFormComponent
+        path:'',component:VisitorFormComponent
     },
     {
         path:'thankyou',component:ThankyouPageComponent
