@@ -13,6 +13,33 @@
     color:white;  
 
 }
+
+.disabled-button {
+    border: none;
+    border-radius: 5px;
+    width: 200px;
+    padding: 15px 32px;
+    align-items: center;
+    text-decoration: none;
+    display: inline-flex; /* Use inline-flex instead of inline-block */
+    justify-content: center; /* Center items horizontally */
+    font-size: 16px;
+    margin: 10px 20px;
+    
+    background-color: #e94e6d; 
+    color: white; 
+    border: 2px solid #DC143C;
+    cursor: not-allowed;
+  }
+  
+  .enabled-button {
+    background-color:#DC143C; /* Blue */
+    color: #fff; /* White */
+  }
+  
+  .button3:disabled {
+    pointer-events: none;
+  }
 .button3{
     border: none;
     border-radius: 5px;
@@ -72,6 +99,10 @@ a{
     width: 850px;
     margin-right: 10px;
 }
+.material-icons.disabled {
+    color: gray;
+    pointer-events: none;
+  }
 
 .inputLabelSerial{
     display: block;

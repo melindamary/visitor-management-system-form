@@ -7,6 +7,9 @@
       <mat-form-field appearance="outline" class="smallInput form-control">
           <mat-label>Enter the Name</mat-label>
           <input matInput formControlName="name" id="name">
+          <mat-error *ngIf="addvisitorForm.get('name')?.hasError('alphabetOnly')">
+            Only alphabetic characters are allowed.
+          </mat-error>
       </mat-form-field>
   </div>
          
@@ -16,6 +19,9 @@
         <mat-form-field appearance="outline" class="smallInput form-control">
             <mat-label>Enter the Phone Number</mat-label>
             <input matInput  id="phoneNumber" name="phoneNumber" formControlName="phoneNumber">
+            <mat-error *ngIf="addvisitorForm.get('phoneNumber')?.hasError('numberOnly')&& addvisitorForm.get('phoneNumber')?.touched" class="astrik">
+              Only numbers are allowed.
+            </mat-error>
         </mat-form-field>
     </div>
     <!-- <div *ngIf="addvisitorForm.get('phoneNumber')?.hasError('required')&& addvisitorForm.get('phoneNumber')?.touched" class="astrik">
@@ -37,6 +43,9 @@
       <mat-form-field appearance="outline" class="largeInput form-control">
           <mat-label>Enter the name of the host</mat-label>
           <input matInput formControlName="personInContact" >
+          <mat-error *ngIf="addvisitorForm.get('personInContact')?.hasError('alphabetOnly')">
+            Only alphabetic characters are allowed.
+          </mat-error>
       </mat-form-field>         
           </div>
       </div>
@@ -71,6 +80,7 @@
                     </mat-option>
                     <mat-option [value]="{ purposeName: 'Other', purposeId: null }">Other</mat-option>
                   </mat-autocomplete> -->
+                
                 </mat-form-field>
               
             
@@ -111,10 +121,12 @@
               <mat-label>Select a Device</mat-label>
               <input type="text"
                      matInput
+                     (ngModelChange)="onInput()"
                      formControlName="deviceCarried"
                      [formControl]="deviceControl"
                      [matAutocomplete]="autoDevice">
-              <mat-autocomplete autoActiveFirstOption #autoDevice="matAutocomplete" [displayWith]="displayDevice" (optionSelected)="onDeviceSelected($event.option.value, i)">
+              <mat-autocomplete autoActiveFirstOption #autoDevice="matAutocomplete" 
+              [displayWith]="displayDevice" (optionSelected)="onDeviceSelected($event.option.value, i)">
                 <mat-option *ngFor="let option of filteredDevice | async" [value]="option">
                   {{ option.deviceName }}
                 </mat-option>
@@ -123,7 +135,10 @@
             </mat-form-field>
           </div>
           <div class="col d-flex align-items-end">
-            <i class="material-icons astrik plus" (click)="addItem()">add_circle</i>
+            <i class="material-icons astrik plus" 
+            [class.disabled]="!isInputFilled"
+            [attr.disabled]="!isInputFilled ? true : null"
+            matTooltip="Add Device" (click)="addItem()">add_circle</i>
           </div>
         </div>
   
@@ -161,7 +176,7 @@
       <div class="form-check">
           <mat-checkbox class="form-check-input"  formControlName="policy" type="checkbox" id="privacyPolicy" required>
           <label class="form-check-label" for="privacyPolicy">
-              I confirm, I have read and agree to Experion Technologies'<a (click)="openPrivacyPolicyDialog(); $event.preventDefault();"> Privacy Policy </a>and consent to sharing my information.
+              I confirm, I have read and agreed to Experion Technologies'<a (click)="openPrivacyPolicyDialog(); $event.preventDefault();"> Privacy Policy </a>and consent to sharing my information.
           </label></mat-checkbox>
           <div *ngIf="addvisitorForm.get('policy')?.hasError('required') && addvisitorForm.get('policy')?.touched" class="astrik">
             *Please indicate your confirmation..
@@ -181,7 +196,9 @@
       </div>
       <div class="col">
         
-          <button class=" button3" type="submit">
+          <button class="button3" type="submit" 
+          
+          >
               Submit
           </button>
       </div>

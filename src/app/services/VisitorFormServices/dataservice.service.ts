@@ -25,14 +25,14 @@ export class DataserviceService {
        
     
   getVisitPurpose(): Observable<PurposeResponse[]> {
-    const apiUrl = "https://localhost:7121/PurposeOfVisit/GetPurposes/get-purposes-id-Name";
+    const apiUrl = "https://localhost:7121/PurposeOfVisit/GetApprovedPurposesIdAndName";
     return this.http.get<{ $id: string, $values: PurposeResponse[] }>(apiUrl).pipe(
       map(response => response.$values)
     );
   }
       
   getDevice():Observable<DeviceResponse[]>{
-    const apiUrl="https://localhost:7121/Device/GetItems/get-device-id-name";
+    const apiUrl="https://localhost:7121/Device/GetDeviceIdAndName";
     return this.http.get<{ $id: string, $values: DeviceResponse[] }>(apiUrl).pipe(
       map(response => response.$values)
     );
