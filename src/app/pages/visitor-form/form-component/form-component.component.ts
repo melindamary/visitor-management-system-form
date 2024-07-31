@@ -6,7 +6,7 @@ import { DataserviceService } from '../../../services/VisitorFormServices/datase
 import { PurposeResponse } from '../../../Models/IPurposeResponse';
 import { DeviceResponse } from '../../../Models/IDeviceResponse';
 import {CustomKeyboardEvent} from '../../../Models/ICustomKeyboardEvent'
-import { DeviceChangeEvent } from '../../../Models/IDeviceChangeEvent';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatRadioModule} from '@angular/material/radio';
 import { WebcamImage, WebcamModule } from 'ngx-webcam';
 import { MatDialog } from '@angular/material/dialog';
@@ -21,11 +21,12 @@ import {MatInputModule} from '@angular/material/input';
 import { debounceTime, map, Observable, startWith, Subject } from 'rxjs';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { VisitorConsentModalComponent } from '../../visitor-consent-modal/visitor-consent-modal.component';
+import { alphabetValidator, numberValidator } from '../custom-validators';
 
 @Component({
   selector: 'app-form-component',
   standalone: true,
-  imports: [RouterLink,NgFor,NgIf,FormsModule,ReactiveFormsModule,NgClass,MatAutocompleteModule,
+  imports: [RouterLink,NgFor,NgIf,FormsModule,ReactiveFormsModule,NgClass,MatAutocompleteModule,MatTooltipModule,
      MatFormFieldModule,MatIconModule,MatInputModule,AsyncPipe,MatRadioModule,MatCheckboxModule,
    WebcamModule,MessagesModule,ToastModule],
   templateUrl: './form-component.component.html',
@@ -48,7 +49,7 @@ export class FormComponentComponent {
   contacts: string[] = [];
   filteredContacts: string[] = [];
   selectedContact: string[]  | null = null;
-
+  isInputFilled :boolean= false;
   purposes: PurposeResponse[] = [];
   // filteredPurposes: PurposeResponse[] = [];
   selectedPurpose: PurposeResponse | undefined ;
@@ -68,9 +69,9 @@ export class FormComponentComponent {
     private fb: FormBuilder,private router: Router,private cdr: ChangeDetectorRef) 
   {
     this.addvisitorForm = this.fb.group({
-      name: ['', Validators.required],
-      phoneNumber: ['', Validators.required],
-      personInContact: ['', Validators.required],
+      name: ['', [Validators.required,alphabetValidator()]],
+      phoneNumber: ['', [Validators.required,numberValidator()]],
+      personInContact: ['',[ Validators.required,alphabetValidator()]],
       purposeofvisit: ['', Validators.required],
       purposeofvisitId: ['', Validators.required],
       carryDevice: [false],
@@ -80,6 +81,11 @@ export class FormComponentComponent {
     });
   }
 
+  onInput() {
+    const value = this.deviceControl.value;
+    console.log('onInput called:', this.deviceControl.value);
+    this.isInputFilled = true;
+  }
   ngOnInit() {
     this.loadVisitPurpose();
     this.loadDevicesCarried();
@@ -91,7 +97,7 @@ export class FormComponentComponent {
       startWith(''),
       map(value => this._filterDevice(value || ''))
     );
-  
+
     // Subscribe to changes in the 'otherPurpose' field to handle 'Other' purpose
     this.addvisitorForm.get('otherPurpose')?.valueChanges.pipe(debounceTime(1000)).subscribe(value => {
       if (this.isOtherPurposeSelected && value) {
@@ -229,14 +235,17 @@ openDialog(): void {
     }
   
     addItem(): void {
+      if (this.isInputFilled) {
       const newItemGroup = this.createItemFormGroup();
       this.items.push(newItemGroup);
-    
+     newItemGroup.get('deviceCarried')?.setValue('');
       newItemGroup.get('otherDevice')?.valueChanges.pipe(debounceTime(1000)).subscribe(value => {
         if (newItemGroup.get('isOtherDeviceSelected')?.value && value) {
           this.storeOtherDevice(value, this.items.length - 1);
         }
       });
+      }
+    
     }
     
   
@@ -319,7 +328,10 @@ logFormDataBeforeSubmit(): void {
 openPrivacyPolicyDialog(): void {
   this.dialog.open(VisitorConsentModalComponent);
 }
-
+isFormValid(): boolean {
+  const formData = this.addvisitorForm.value;
+  return this.addvisitorForm.valid && formData.policy && this.capturedImage && localStorage.getItem('officeLocationId');
+}
 onSubmit(): void {
   const formData = this.addvisitorForm.value;
   const imageData = this.capturedImage;
@@ -346,7 +358,12 @@ onSubmit(): void {
     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Office location ID is required.' });
     return;
   }
-
+  // Check if any of the required fields are missing
+  if (!formData.name || !formData.phoneNumber || !formData.personInContact || !formData.purposeofvisitId || !policy || !imageData) {
+    console.error('One or more required fields are missing.');
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Please fill all the details!' });
+    return;
+  }
   const selectedDevice = formData.items
     .filter((item: any) => item.deviceCarried && item.DeviceSerialnumber)
     .map((item: any) => ({

@@ -16,6 +16,7 @@ import { Action } from 'rxjs/internal/scheduler/Action';
   styleUrl: './capture-photo-dialog-component.component.scss'
 })
 export class CapturePhotoDialogComponentComponent {
+  durationInSeconds = 1;
   public trigger: Subject<void> = new Subject<void>();
   public webcamImage: WebcamImage | null = null;
   horizontalPosition: MatSnackBarHorizontalPosition = 'start';
@@ -30,7 +31,7 @@ export class CapturePhotoDialogComponentComponent {
     this.webcamImage = webcamImage;
     this.adjustDialogHeight();
     this._snackBar.open('Image Taken Successfully', 'Close', {
-       
+      duration: this.durationInSeconds * 1000,
     });
   }
 
@@ -48,14 +49,15 @@ export class CapturePhotoDialogComponentComponent {
 
   openSnackBar() {
     if(this.webcamImage){
-      this._snackBar.open('successfully Uploaded Photo', 'Close', {
+      this._snackBar.open('Successfully Uploaded Photo', 'Close', {
+        duration: this.durationInSeconds * 1000,
         horizontalPosition: this.horizontalPosition,
         verticalPosition: this.verticalPosition,
       });
     }
     else{
       this._snackBar.open('Please upload your photo', 'Close', {
-       
+        duration: this.durationInSeconds * 1000,
       });
     }
     }

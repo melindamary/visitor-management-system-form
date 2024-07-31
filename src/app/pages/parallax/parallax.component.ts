@@ -123,7 +123,12 @@ setBackgroundImages(): void {
 }
 
 
-
+enter() {
+  // Your logic for the enter button click
+  console.log('Button clicked');
+  this.goToTodoPage();
+  // Add your functionality here
+}
 nextSection(): void {
   const nextIndex = (this.currentSectionIndex + 1) % this.sections.length;
   this.fadeSection(this.currentSectionIndex, nextIndex);
