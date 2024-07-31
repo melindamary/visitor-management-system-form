@@ -161,7 +161,7 @@
       <div class="form-check">
           <mat-checkbox class="form-check-input"  formControlName="policy" type="checkbox" id="privacyPolicy" required>
           <label class="form-check-label" for="privacyPolicy">
-              I confirm, I have read and agree to Experion Technologies'<a routerLink ="/thankyou"> Privacy Policy </a>and consent to sharing my information.
+              I confirm, I have read and agree to Experion Technologies'<a (click)="openPrivacyPolicyDialog(); $event.preventDefault();"> Privacy Policy </a>and consent to sharing my information.
           </label></mat-checkbox>
           <div *ngIf="addvisitorForm.get('policy')?.hasError('required') && addvisitorForm.get('policy')?.touched" class="astrik">
             *Please indicate your confirmation..

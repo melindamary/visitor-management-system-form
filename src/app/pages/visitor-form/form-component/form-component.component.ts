@@ -20,6 +20,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import { debounceTime, map, Observable, startWith, Subject } from 'rxjs';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { VisitorConsentModalComponent } from '../../visitor-consent-modal/visitor-consent-modal.component';
 
 @Component({
   selector: 'app-form-component',
@@ -62,7 +63,8 @@ export class FormComponentComponent {
   trigger : Subject<void> = new Subject();
  
 
-  constructor(private apiService: DataserviceService,public dialog: MatDialog,private messageService: MessageService,
+  constructor(private apiService: DataserviceService,
+    public dialog: MatDialog,private messageService: MessageService,
     private fb: FormBuilder,private router: Router,private cdr: ChangeDetectorRef) 
   {
     this.addvisitorForm = this.fb.group({
@@ -314,6 +316,9 @@ logFormDataBeforeSubmit(): void {
   console.log("Selected Devices:", selectedDevice); // Log the selected devices
 }
 
+openPrivacyPolicyDialog(): void {
+  this.dialog.open(VisitorConsentModalComponent);
+}
 
 onSubmit(): void {
   const formData = this.addvisitorForm.value;
