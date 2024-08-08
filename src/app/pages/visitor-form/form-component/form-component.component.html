@@ -105,13 +105,13 @@
       <div class="radio-container carryDevice">
         <label class="inputRadioLabel">Are you carrying any device?</label>
         <mat-radio-group formControlName="carryDevice" (change)="onCarryDeviceChange($event.value)">
-          <mat-radio-button [value]="true">Yes</mat-radio-button>
-          <mat-radio-button [value]="false">No</mat-radio-button>
+          <mat-radio-button [value]=1>Yes</mat-radio-button>
+          <mat-radio-button [value]=0>No</mat-radio-button>
         </mat-radio-group>
       </div>
     </div>
   </div>
-  <div *ngIf="addvisitorForm.get('carryDevice')?.value">
+  <div *ngIf="showDeviceOption">
     <div formArrayName="items">
       <div *ngFor="let item of items.controls; let i = index" [formGroupName]="i">
         <div class="row mb-3" style="margin-left: 23px;">
