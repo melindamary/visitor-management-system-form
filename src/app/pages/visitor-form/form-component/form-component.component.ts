@@ -37,7 +37,7 @@ export class FormComponentComponent {
   messages!:Message[] ;
   addvisitorForm: FormGroup;  
   showItemOtherInput: boolean = false;
-
+  showDeviceOption:boolean= false;
   isOtherPurposeSelected = false;
   isOtherDeviceSelected = false;
   isDeviceCarried = false;
@@ -74,7 +74,7 @@ export class FormComponentComponent {
       personInContact: ['',[ Validators.required,alphabetValidator()]],
       purposeofvisit: ['', Validators.required],
       purposeofvisitId: ['', Validators.required],
-      carryDevice: [false],
+      carryDevice: [''],
       otherPurpose: [''],
       items: this.fb.array([this.createItemFormGroup()]), // Initialize with one item
       policy: ['', Validators.required]
@@ -225,11 +225,15 @@ openDialog(): void {
       });
     }
   
-    onCarryDeviceChange(value: boolean): void {
-      if (value) {
-        console.log('Carrying device:', value);
+    onCarryDeviceChange(value:number): void {
+      if (value === 1) {
+        this.showDeviceOption = !this.showDeviceOption;
         // this.addItem(); // Add an initial item if necessary
-      } else {
+        if (this.items.length === 0) {
+          this.items.push(this.createItemFormGroup());
+        }
+      } else if(value === 0) {
+        this.showDeviceOption = !this.showDeviceOption;
         this.items.clear(); // Clear items if "No"
       }
     }
