@@ -1,0 +1,161 @@
+.astrik{
+    color:red;  
+
+}
+.plusBtn{
+    border: none;
+    
+}
+.plusBtnHide{
+    display: none;
+}
+.astrik-white{
+    color:white;  
+
+}
+
+.disabled-button {
+    border: none;
+    border-radius: 5px;
+    width: 200px;
+    padding: 15px 32px;
+    align-items: center;
+    text-decoration: none;
+    display: inline-flex; /* Use inline-flex instead of inline-block */
+    justify-content: center; /* Center items horizontally */
+    font-size: 16px;
+    margin: 10px 20px;
+    
+    background-color: #e94e6d; 
+    color: white; 
+    border: 2px solid #DC143C;
+    cursor: not-allowed;
+  }
+  
+  .enabled-button {
+    background-color:#DC143C; /* Blue */
+    color: #fff; /* White */
+  }
+  
+  .button3:disabled {
+    pointer-events: none;
+  }
+.button3{
+    border: none;
+    border-radius: 5px;
+    width: 200px;
+    padding: 15px 32px;
+    align-items: center;
+    text-decoration: none;
+    display: inline-flex; /* Use inline-flex instead of inline-block */
+    justify-content: center; /* Center items horizontally */
+    font-size: 16px;
+    margin: 10px 20px;
+    cursor: pointer;
+    background-color: #DC143C; 
+    color: white; 
+    border: 2px solid #DC143C;
+}
+.button span {
+    margin: 0 5px; /* Adjust the spacing as needed */
+    display: flex;
+    align-items: center;
+}
+.inputLabel{
+    display: block;
+    margin-bottom: 10px;
+}
+.plus{
+    
+    
+    cursor: pointer;
+    margin-top: 40px;
+    /* margin-right: -33px; */
+    margin-left: -17px;
+    height: 25px;
+    width: 25px;
+}
+.largeInput {
+    width: 840px;
+    margin-right: 10px;
+}
+.carryDevice{
+    margin-left: -423px;
+}
+a{
+    text-decoration: underline;
+    color: blue;
+}
+.otherDevicelargeInput {
+    width: 840px;
+    margin-left: 33px;
+}
+.serialInput{
+    width: 600px;
+    height: 50px;
+    margin-left: 33px;
+}
+.DeviceInput {
+    width: 850px;
+    margin-right: 10px;
+}
+.material-icons.disabled {
+    color: gray;
+    pointer-events: none;
+  }
+
+.inputLabelSerial{
+    display: block;
+    margin-bottom: 10px;
+    
+}
+
+
+.visitorForm{
+    display: flex;
+    justify-content: center; 
+    flex-direction: column;   
+    width: 100%;
+    margin-top: 20px;
+    align-items: center;
+    
+}
+
+
+.radio-container {
+    display: flex;
+    justify-content: left;
+    align-items: center; /* Aligns items vertically center */
+  }
+  
+  .mat-radio-group {
+    display: flex;
+  }
+  .inputRadioLabel {
+    margin-right: 15px; /* Adjust spacing between label and radio buttons */
+  }
+  .mat-radio-button {
+    margin-right: 10px; /* Adjust spacing between radio buttons */
+  }
+.form-control:focus {
+    border-color: #DC143C;
+    box-shadow: 0 0 0 0.1rem rgba(239, 8, 77, 0.25); // Adjusted box-shadow to match Bootstrap's default
+}
+.row{
+    display: flex;    
+}
+.col {
+    display: flex;
+    flex-direction: column;
+  }
+.smallInput {
+    width: 407px;
+    margin-right: 10px;
+}
+.mediumInput {
+    width: 600px;
+    height: 50px;
+    margin-right: 10px;
+    margin-left:10px ;
+
+}

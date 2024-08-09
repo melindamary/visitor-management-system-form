@@ -1,0 +1,78 @@
+/* privacy-policy-dialog.component.css */
+.dialog-container {
+  position: relative; /* Ensure child elements are positioned relative to this container */
+  padding: 2rem;
+}
+
+.logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0.5rem; /* Adjust spacing as needed */
+  max-width: 100px;
+}
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0.5rem; /* Adjust spacing as needed */
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin: 3rem 0 1rem; /* Add margin-top to prevent overlap with logo */
+}
+
+/* Styling for the rest of the content */
+.fieldhead {
+  margin-bottom: 1rem;
+}
+
+.row {
+  display: flex;
+  justify-content: flex-end; /* Align items to the right */
+  margin-bottom: 0.5rem;
+}
+
+.label, .value {
+  margin: 0 0.5rem; /* Adjust space between label and value */
+}
+
+.label {
+  font-weight: bold;
+  text-align: right;
+}
+
+.value {
+  text-align: right; /* Align text to the right */
+}
+
+ul {
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  margin-top: 1.5rem;
+  font-size: 1.25rem;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+mat-dialog-actions button {
+  background-color: #007bff;
+  color: white;
+}
+
+mat-dialog-actions button:hover {
+  background-color: #0056b3;
+}
