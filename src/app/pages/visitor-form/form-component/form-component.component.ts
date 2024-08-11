@@ -5,7 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { DataserviceService } from '../../../services/VisitorFormServices/dataservice.service';
 import { PurposeResponse } from '../../../Models/IPurposeResponse';
 import { DeviceResponse } from '../../../Models/IDeviceResponse';
-import {CustomKeyboardEvent} from '../../../Models/ICustomKeyboardEvent'
+import { NgxImageCompressService } from 'ngx-image-compress';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatRadioModule} from '@angular/material/radio';
 import { WebcamImage, WebcamModule } from 'ngx-webcam';
@@ -64,7 +64,7 @@ export class FormComponentComponent {
   trigger : Subject<void> = new Subject();
  
 
-  constructor(private apiService: DataserviceService,
+  constructor(private apiService: DataserviceService,private imageCompress: NgxImageCompressService,
     public dialog: MatDialog,private messageService: MessageService,
     private fb: FormBuilder,private router: Router,private cdr: ChangeDetectorRef) 
   {
@@ -117,13 +117,33 @@ export class FormComponentComponent {
     });
   }
 
+// openDialog(): void {
+//   const dialogRef = this.dialog.open(CapturePhotoDialogComponentComponent);
+
+//   dialogRef.afterClosed().subscribe((result: WebcamImage | null) => {
+//     if (result) {
+//       this.capturedImage = result.imageAsDataUrl;
+//       console.log("captured event", this.capturedImage);
+//     }
+//   });
+// }
+
 openDialog(): void {
   const dialogRef = this.dialog.open(CapturePhotoDialogComponentComponent);
 
   dialogRef.afterClosed().subscribe((result: WebcamImage | null) => {
     if (result) {
       this.capturedImage = result.imageAsDataUrl;
-      console.log("captured event", this.capturedImage);
+
+      // Compress the image
+      this.imageCompress.compressFile(this.capturedImage, 0, 50, 50).then(
+        (compressedImage) => {
+          this.capturedImage = compressedImage;
+          console.log("compressed image", this.capturedImage);
+          // Store the compressed image
+          // this.storeImage(this.capturedImage);
+        }
+      );
     }
   });
 }
