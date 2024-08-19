@@ -1,5 +1,5 @@
 import { Component, inject, NgModule } from '@angular/core';
-import { LocationService } from '../../core/services/location-management/location.service'; // Adjust the import based on your project structure
+import { LocationService } from '../../services/locationServices/locationservice.service'; // Adjust the import based on your project structure
 import { NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 interface LocationDetails {
@@ -27,19 +27,19 @@ export class BootingPageComponent {
   constructor(private locationService: LocationService) { }
 
   ngOnInit(): void {
-    this.locations = this.getInitialDummyData();
+    // this.locations = this.getInitialDummyData();
 
-    // this.locationService.getAllLocationDetails().subscribe(response => {
-    //   this.locations = response;
-    // });
+    this.locationService.getAllLocationDetails().subscribe(response => {
+      this.locations = response;
+    });
   }
-  getInitialDummyData(): LocationDetails[] {
-    return [
-      { id: 1, name: 'California', address: 'Some address in California', phone: null, createdDate: new Date().toISOString() },
-      { id: 2, name: 'Texas', address: 'Some address in Texas', phone: null, createdDate: new Date().toISOString() },
-      { id: 3, name: 'Johannesburg', address: 'Some address in Johannesburg', phone: null, createdDate: new Date().toISOString() }
-    ];
-  }
+  // getInitialDummyData(): LocationDetails[] {
+  //   return [
+  //     { id: 1, name: 'California', address: 'Some address in California', phone: null, createdDate: new Date().toISOString() },
+  //     { id: 2, name: 'Texas', address: 'Some address in Texas', phone: null, createdDate: new Date().toISOString() },
+  //     { id: 3, name: 'Johannesburg', address: 'Some address in Johannesburg', phone: null, createdDate: new Date().toISOString() }
+  //   ];
+  // }
   onLocationChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     this.selectedLocationId = Number(selectElement.value);
