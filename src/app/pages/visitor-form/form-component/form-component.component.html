@@ -53,51 +53,41 @@
  <!-- <div *ngIf="addvisitorForm.get('personInContact')?.hasError('required')&& addvisitorForm.get('personInContact')?.touched"class="astrik">
             *Name of the host is required.
           </div>  -->
-  <div class="row mb-3">
-    <div class="col">  
-          <label class="inputLabel">Purpose Of Visit<span class="astrik">*</span></label>
-          <mat-form-field class="largeInput" appearance="outline">
-            <mat-label>Select a Purpose of Visit</mat-label>
-            <input type="text"
-            matInput
-            formControlName="purposeofvisit"
-            [formControl]="myControl"
-            [matAutocomplete]="auto">
-     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayPurpose" (optionSelected)="onPurposeSelected($event.option.value)">
-       <mat-option *ngFor="let option of filteredPurposes  | async" [value]="option">
-         {{option.purposeName }}
-       </mat-option>
-       <mat-option [value]="{ purposeName: 'Other', purposeId: null }">Other</mat-option>
-     </mat-autocomplete>
-            <!-- <input type="text"
-                   matInput
-                   formControlName="purposeofvisit"
-                   [formControl]="myControl"
-                   [matAutocomplete]="auto">
-                   <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]=" displayPurpose" (optionSelected)="onPurposeSelected($event.option.value)">
-                    <mat-option *ngFor="let option of filteredPurposes | async" [value]="option">
-                      {{ option.purposeName }}
-                    </mat-option>
-                    <mat-option [value]="{ purposeName: 'Other', purposeId: null }">Other</mat-option>
-                  </mat-autocomplete> -->
-                
-                </mat-form-field>
-              
-            
-            <div *ngIf="isOtherPurposeSelected">
+          <div class="row mb-3">
+            <div class="col">
+              <label class="inputLabel">Purpose Of Visit<span class="astrik">*</span></label>
               <mat-form-field class="largeInput" appearance="outline">
-                <mat-label>Enter Other Purpose of Visit</mat-label>
+                <mat-label>Select a Purpose of Visit</mat-label>
                 <input type="text"
                        matInput
-                       formControlName="otherPurpose">
-              </mat-form-field>
-            </div>   
-      
-      <div *ngIf="addvisitorForm.get('purposeofvisitId')?.hasError('required') && addvisitorForm.get('purposeofvisitId')?.touched" class="astrik">
-        *Name of the purpose is required.
-      </div>
-    </div>
-  </div>
+                       formControlName="purposeofvisit"
+                       [formControl]="myControl"
+                       [matAutocomplete]="autoPurpose"
+                       (focus)="onInputFocus()">
+                <mat-autocomplete autoActiveFirstOption #autoPurpose="matAutocomplete"
+                [displayWith]="displayPurpose"
+                                  (optionSelected)="onPurposeSelected($event.option.value)">
+                  <mat-option *ngFor="let option of filteredPurposes | async" [value]="option">
+                    {{option.purposeName }}
+                  </mat-option>
+                  <mat-option [value]="{ purposeName: 'Other', purposeId: null }">Other</mat-option>
+              </mat-autocomplete>             
+              </mat-form-field>          
+              <div *ngIf="isOtherPurposeSelected">
+                <mat-form-field class="largeInput" appearance="outline">
+                  <mat-label>Enter Other Purpose of Visit</mat-label>
+                  <input type="text"
+                         matInput
+                         formControlName="otherPurpose"
+                         (focusout)="onPurposeFocusOut()">
+                </mat-form-field>
+              </div>          
+              <div *ngIf="addvisitorForm.get('purposeofvisitId')?.hasError('required') && addvisitorForm.get('purposeofvisitId')?.touched" class="astrik">
+                *Name of the purpose is required.
+              </div>
+            </div>
+          </div>
+          
   
 
   <div class="row mb-3">
@@ -120,13 +110,13 @@
             <mat-form-field class="DeviceInput" appearance="outline">
               <mat-label>Select a Device</mat-label>
               <input type="text"
-                     matInput
-                     (ngModelChange)="onInput()"
-                     formControlName="deviceCarried"
-                     [formControl]="deviceControl"
+                     matInput     
+                     (focus)="onFocus(i)"
+                     [formControl]="getDeviceCarriedControl(i)"        
+                     formControlName="deviceCarried"                    
                      [matAutocomplete]="autoDevice">
-              <mat-autocomplete autoActiveFirstOption #autoDevice="matAutocomplete" 
-              [displayWith]="displayDevice" (optionSelected)="onDeviceSelected($event.option.value, i)">
+              <mat-autocomplete autoActiveFirstOption #autoDevice="matAutocomplete" [displayWith]="displayDevice"
+               (optionSelected)="onDeviceSelected($event.option.value, i)">
                 <mat-option *ngFor="let option of filteredDevice | async" [value]="option">
                   {{ option.deviceName }}
                 </mat-option>
@@ -135,10 +125,15 @@
             </mat-form-field>
           </div>
           <div class="col d-flex align-items-end">
+            <div class="deviceControl">
             <i class="material-icons astrik plus" 
             [class.disabled]="!isInputFilled"
             [attr.disabled]="!isInputFilled ? true : null"
-            matTooltip="Add Device" (click)="addItem()">add_circle</i>
+            matTooltip="Add Device" (click)="addItem(i)">add_circle</i>
+            <i *ngIf="i > 0" class="material-icons astrik minus" 
+           matTooltip="Remove Device" (click)="removeItem(i)">remove_circle</i>   
+          </div>
+
           </div>
         </div>
   
@@ -147,7 +142,7 @@
           <div class="">
             <mat-form-field appearance="outline" class="otherDevicelargeInput">
               <mat-label>Enter Other Device</mat-label>
-              <input matInput formControlName="otherDevice">
+              <input matInput formControlName="otherDevice" (focusout)="onOtherDeviceFocusOut(i)" >
             </mat-form-field>
           </div>
         </div>
@@ -184,21 +179,22 @@
       </div>
   </div>
   <div class="row mb-3">
+ 
    <div class="col">
         <button class=" button3"(click)="openDialog()" type="button">
           <i class="material-icons  camera">photo_camera</i>
            Photo<span class="astrik-white">*</span>
       </button>
-       
-      <div *ngIf="capturedImage">
-        <img [src]="capturedImage.imageAsDataUrl">
-      </div>
+   
       </div>
       <div class="col">
-        
-          <button class="button3" type="submit" 
-          
-          >
+        <div *ngIf="capturedImage">
+          <!-- Display before compression -->
+          <img [src]="capturedImage" alt="Captured Image" class="capturedPhoto"/>
+        </div>
+      </div>
+      <div class="col">        
+          <button class="button3 submitButtonHieght" type="submit">
               Submit
           </button>
       </div>

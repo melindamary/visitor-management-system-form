@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy,ChangeDetectorRef,Component } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormsModule,ReactiveFormsModule, Validators } from '@angular/forms';
+import {  AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormsModule,isFormControl,ReactiveFormsModule, Validators } from '@angular/forms';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { DataserviceService } from '../../../services/VisitorFormServices/dataservice.service';
@@ -18,7 +18,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
-import { debounceTime, map, Observable, startWith, Subject } from 'rxjs';
+import {  map, Observable, of, startWith, Subject } from 'rxjs';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { VisitorConsentModalComponent } from '../../visitor-consent-modal/visitor-consent-modal.component';
 import { alphabetValidator, numberValidator } from '../custom-validators';
@@ -33,7 +33,11 @@ import { alphabetValidator, numberValidator } from '../custom-validators';
   styleUrl: './form-component.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+
+
+
 export class FormComponentComponent {
+
   messages!:Message[] ;
   addvisitorForm: FormGroup;  
   showItemOtherInput: boolean = false;
@@ -41,7 +45,7 @@ export class FormComponentComponent {
   isOtherPurposeSelected = false;
   isOtherDeviceSelected = false;
   isDeviceCarried = false;
-
+  isPlusClicked: boolean = false;
   myControl = new FormControl('');
   deviceControl= new FormControl('')
   filteredPurposes!: Observable<PurposeResponse[]>;
@@ -51,17 +55,18 @@ export class FormComponentComponent {
   selectedContact: string[]  | null = null;
   isInputFilled :boolean= false;
   purposes: PurposeResponse[] = [];
-  // filteredPurposes: PurposeResponse[] = [];
+  
   selectedPurpose: PurposeResponse | undefined ;
 
   Devices: DeviceResponse[] = [];
-  // filteredDevice: DeviceResponse[] = [];
+  
   selectedDevice: DeviceResponse | null = null;
 
   permissionStatus : string="";
   camData:any = null;
   capturedImage : any ='';
   trigger : Subject<void> = new Subject();
+  showSerialInput: boolean=false;
  
 
   constructor(private apiService: DataserviceService,private imageCompress: NgxImageCompressService,
@@ -81,52 +86,69 @@ export class FormComponentComponent {
     });
   }
 
-  onInput() {
-    const value = this.deviceControl.value;
-    console.log('onInput called:', this.deviceControl.value);
-    this.isInputFilled = true;
+  // onInput() {
+  //   const value = this.deviceControl.value;
+  //   console.log('onInput called:', this.deviceControl.value);
+    
+  // }
+
+  getDeviceCarriedControl(index: number): FormControl {
+    const control = this.items.at(index).get('deviceCarried');
+    if (isFormControl(control)) {
+      return control;
+    } else {
+      throw new Error('Control is not an instance of FormControl');
+    }
   }
   ngOnInit() {
     this.loadVisitPurpose();
-    this.loadDevicesCarried();
-
+    
     this.filteredPurposes=this.myControl.valueChanges
     .pipe(startWith(''),map(value => this._filterPurpose(value || '')));
-  
-    this.filteredDevice = this.deviceControl.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filterDevice(value || ''))
-    );
+
+
+    this.loadDevicesCarried();  
+    // this.filteredDevice = this.items.at(0)?.get('deviceCarried')?.valueChanges.pipe(
+    //   startWith(''),
+    //   map(value => this._filterDevice(value || ''))
+    // ) ?? of([]);
 
     // Subscribe to changes in the 'otherPurpose' field to handle 'Other' purpose
-    this.addvisitorForm.get('otherPurpose')?.valueChanges.pipe(debounceTime(1000)).subscribe(value => {
-      if (this.isOtherPurposeSelected && value) {
-        this.storeOtherPurpose(value);
-      }
-    });
+    // this.addvisitorForm.get('otherPurpose')?.valueChanges.pipe(debounceTime(1000)).subscribe(value => {
+    //   if (this.isOtherPurposeSelected && value) {
+    //     this.storeOtherPurpose(value);
+    //   }
+    // });
   
     // Subscribe to changes in each item's 'otherDevice' field
-    this.items.controls.forEach((control: AbstractControl, index: number) => {
-      const formGroup = control as FormGroup;
-      formGroup.addControl('isOtherDeviceSelected', new FormControl(false));
-      formGroup.get('otherDevice')?.valueChanges.pipe(debounceTime(1000)).subscribe(value => {
-        if (formGroup.get('isOtherDeviceSelected')?.value && value) {
-          this.storeOtherDevice(value, index);
-        }
-      });
-    });
+    // this.items.controls.forEach((control: AbstractControl, index: number) => {
+    //   const formGroup = control as FormGroup;
+    //   formGroup.addControl('isOtherDeviceSelected', new FormControl(false));
+    //   formGroup.get('otherDevice')?.valueChanges.pipe(debounceTime(1000)).subscribe(value => {
+    //     if (formGroup.get('isOtherDeviceSelected')?.value && value) {
+    //       this.storeOtherDevice(value, index);
+    //     }
+    //   });
+    // });
   }
 
-// openDialog(): void {
-//   const dialogRef = this.dialog.open(CapturePhotoDialogComponentComponent);
+  onFocus(index:number){
+    this.updateFilteredDevice(index);
 
-//   dialogRef.afterClosed().subscribe((result: WebcamImage | null) => {
-//     if (result) {
-//       this.capturedImage = result.imageAsDataUrl;
-//       console.log("captured event", this.capturedImage);
-//     }
-//   });
-// }
+  }
+  updateFilteredDevice(index: number): void {
+    const deviceCarriedControl = this.items.at(index)?.get('deviceCarried');
+    
+    if (deviceCarriedControl) {
+      this.filteredDevice = deviceCarriedControl.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterDevice(value || ''))
+      );
+    } else {
+      this.filteredDevice = of([]);
+    }
+  }
+
 
 openDialog(): void {
   const dialogRef = this.dialog.open(CapturePhotoDialogComponentComponent);
@@ -134,7 +156,6 @@ openDialog(): void {
   dialogRef.afterClosed().subscribe((result: WebcamImage | null) => {
     if (result) {
       this.capturedImage = result.imageAsDataUrl;
-
       // Compress the image
       this.imageCompress.compressFile(this.capturedImage, 0, 50, 50).then(
         (compressedImage) => {
@@ -142,10 +163,12 @@ openDialog(): void {
           console.log("compressed image", this.capturedImage);
           // Store the compressed image
           // this.storeImage(this.capturedImage);
+          this.cdr.detectChanges();
         }
       );
     }
   });
+  this.capturedImage = this.capturedImage;
 }
  loadContactPerson(){
   this.apiService.getContactPerson()
@@ -158,7 +181,7 @@ openDialog(): void {
   loadVisitPurpose(){
     this.apiService.getVisitPurpose()
       .subscribe((response :PurposeResponse[]) => {
-        console.log("API Response:", response);
+        console.log(" purpose API Response:", response);
       this.purposes = response;
     });
    }  
@@ -167,6 +190,15 @@ openDialog(): void {
     const filterValue = typeof value === 'string' ? value.toLowerCase() : '';
     return this.purposes.filter(option => option.purposeName.toLowerCase().includes(filterValue));
   }   
+
+
+  onPurposeFocusOut(): void {
+    const otherPurpose = this.addvisitorForm.get('otherPurpose')?.value;
+    if (this.isOtherPurposeSelected && otherPurpose) {
+      this.storeOtherPurpose(otherPurpose);
+    }
+  }
+  
     
   storeOtherPurpose(value: string): void {
     this.apiService.addPurpose(value).subscribe(
@@ -186,7 +218,10 @@ openDialog(): void {
   }
 
 
-    
+  onInputFocus() {
+    // Trigger the filtering logic, or ensure that the options are populated.
+    this.myControl.setValue(this.myControl.value || ''); // This will trigger the valueChanges observable and filter the options.
+  }
   displayPurpose(purpose?: any): string  {
     return purpose ? purpose.purposeName : undefined;
   }
@@ -196,9 +231,8 @@ openDialog(): void {
     if (selectedOption.purposeName === 'Other') {
       this.isOtherPurposeSelected = true;
       this.addvisitorForm.patchValue({
-        selectedPurpose: '',
-        purposeofvisitId: null,
-        otherPurpose: ''
+        purposeofvisitId: null, // Clear the purpose ID
+        otherPurpose: ''       // Clear other purpose field
       });
     } else {
       this.isOtherPurposeSelected = false;
@@ -207,15 +241,16 @@ openDialog(): void {
   
       // Update the form with the selected purpose details
       this.addvisitorForm.patchValue({
-        selectedPurpose: value,
+        purposeofvisit: value, // Ensure this matches your form control name
         purposeofvisitId: purposeId,
-        otherPurpose: ''
+        otherPurpose: ''       // Clear other purpose field
       });
   
       console.log('Purpose entered:', value);
       console.log('Purpose ID:', purposeId);
     }
   }
+  
   
   
   loadDevicesCarried(){
@@ -239,9 +274,10 @@ openDialog(): void {
     createItemFormGroup(): FormGroup {
       return this.fb.group({
         deviceCarried: ['', Validators.required],
-        DeviceSerialnumber: [''],
+        DeviceSerialnumber: ['', Validators.required],
         otherDevice: [''],
-        isOtherDeviceSelected: [false]
+        isOtherDeviceSelected: [false],
+        deviceControl: this.fb.control('')
       });
     }
   
@@ -258,24 +294,47 @@ openDialog(): void {
       }
     }
   
-    addItem(): void {
+    addItem(index: number): void {
       if (this.isInputFilled) {
-      const newItemGroup = this.createItemFormGroup();
-      this.items.push(newItemGroup);
-     newItemGroup.get('deviceCarried')?.setValue('');
-      newItemGroup.get('otherDevice')?.valueChanges.pipe(debounceTime(1000)).subscribe(value => {
-        if (newItemGroup.get('isOtherDeviceSelected')?.value && value) {
-          this.storeOtherDevice(value, this.items.length - 1);
-        }
-      });
+        this.isPlusClicked = true;        
+        // Create a new item form group with empty initial values
+        
+        const newItemGroup = this.createItemFormGroup();        
+        // Push the newly created group to the form array
+        
+        this.items.push(newItemGroup);    
+        // Clear the value of the new form control (this should be redundant but ensures it's empty)
+        newItemGroup.get('deviceCarried')?.reset('');   
+        
+        const deviceControl = new FormControl('');
+        newItemGroup.setControl('deviceControl', deviceControl);
+        
       }
-    
+    }
+
+    removeItem(index: number) {
+      this.items.removeAt(index);
+      if (this.items.length === 0) {
+        this.isPlusClicked = false; // Reset to false when no items are left
+      }
+      
     }
     
   
-    displayDevice(device?: any): string  {
-      return device ? device.deviceName : undefined;
+    displayDevice(device?: any): string {
+      if (!device) {
+        return '';
+      }
+      
+      // If the device is 'Other', display 'Other' regardless of its database status
+      if (device.deviceName === 'Other') {
+        return 'Other';
+      }
+      
+      // Otherwise, return the actual device name
+      return device.deviceName;
     }
+    
   
 
     subscribeToSerialNumberChanges(group: FormGroup, index: number): void {
@@ -288,6 +347,8 @@ openDialog(): void {
     }
    
     onDeviceSelected(selectedOption: any, index: number): void {
+      this.isInputFilled = true;
+      this.showSerialInput = !this.showSerialInput;
       const items = this.addvisitorForm.get('items') as FormArray;
       const item = items.at(index);
     
@@ -298,7 +359,7 @@ openDialog(): void {
           isOtherDeviceSelected: true,
           otherDevice: '', // Clear the field for "Other"
           DeviceSerialnumber: '', // Clear serial number
-          deviceCarried: { deviceId: null, deviceName: 'Other' }, // Store as an object
+         
         });
       } else {
         item.patchValue({
@@ -307,9 +368,19 @@ openDialog(): void {
           deviceCarried: { deviceId: selectedOption.deviceId, deviceName: selectedOption.deviceName }, // Store as an object
         });
       }
-      this.logFormDataBeforeSubmit();
+      // this.logFormDataBeforeSubmit();
+      this.updateFilteredDevice(index);
     }
     
+    onOtherDeviceFocusOut(index: number): void {
+      const formGroup = this.items.controls[index] as FormGroup;
+      const isOtherDeviceSelected = formGroup.get('isOtherDeviceSelected')?.value;
+      const otherDeviceValue = formGroup.get('otherDevice')?.value;
+    
+      if (isOtherDeviceSelected && otherDeviceValue) {
+        this.storeOtherDevice(otherDeviceValue, index);
+      }
+    }
     
     storeOtherDevice(value: string, index: number): void {
       this.apiService.addDevice(value).subscribe(
@@ -317,9 +388,9 @@ openDialog(): void {
           console.log('Other device added successfully:', response);
           const formGroup = this.items.at(index) as FormGroup;
           formGroup.patchValue({
-            deviceCarried: { deviceId: response.id, deviceName: value },
+            deviceCarry: { deviceId: response.id, deviceName: value },
           });
-          this.logFormDataBeforeSubmit();
+          // this.logFormDataBeforeSubmit();
         },
         (error) => {
           console.error('Error adding other device:', error);
@@ -360,7 +431,7 @@ onSubmit(): void {
   const formData = this.addvisitorForm.value;
   const imageData = this.capturedImage;
   const policy = formData.policy;
-  
+  const formSubmissionMode = "Kiosk";
   console.log('Purpose ID:', formData.purposeofvisitId);
   console.log('Form Data:', formData);
 
@@ -389,9 +460,9 @@ onSubmit(): void {
     return;
   }
   const selectedDevice = formData.items
-    .filter((item: any) => item.deviceCarried && item.DeviceSerialnumber)
+    .filter((item: any) => item.deviceCarry && item.DeviceSerialnumber)
     .map((item: any) => ({
-      deviceId: item.deviceCarried.deviceId, // Access deviceId
+      deviceId: item.deviceCarry.deviceId, // Access deviceId
       serialNumber: item.DeviceSerialnumber
     }));
 
@@ -403,6 +474,7 @@ onSubmit(): void {
     purposeOfVisitId: formData.purposeofvisitId,
     officeLocationId: Number(officeLocationId),
     selectedDevice: selectedDevice,
+    formSubmissionMode:formSubmissionMode,
     imageData: imageData
   };
 
