@@ -79,7 +79,7 @@ export class FormComponentComponent {
       personInContact: ['',[ Validators.required,alphabetValidator()]],
       purposeofvisit: ['', Validators.required],
       purposeofvisitId: ['', Validators.required],
-      carryDevice: [''],
+      carryDevice: ['',Validators.required],
       otherPurpose: [''],
       items: this.fb.array([this.createItemFormGroup()]), // Initialize with one item
       policy: ['', Validators.required]

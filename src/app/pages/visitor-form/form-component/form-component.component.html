@@ -8,7 +8,10 @@
           <mat-label>Enter the Name</mat-label>
           <input matInput formControlName="name" id="name">
           <mat-error *ngIf="addvisitorForm.get('name')?.hasError('alphabetOnly')">
-            Only alphabetic characters are allowed.
+            *Only alphabetic characters are allowed.
+          </mat-error>
+          <mat-error *ngIf="addvisitorForm.get('name')?.hasError('required')">
+            *Required Field
           </mat-error>
       </mat-form-field>
   </div>
@@ -21,6 +24,9 @@
             <input matInput  id="phoneNumber" name="phoneNumber" formControlName="phoneNumber">
             <mat-error *ngIf="addvisitorForm.get('phoneNumber')?.hasError('numberOnly')&& addvisitorForm.get('phoneNumber')?.touched" class="astrik">
               Only numbers are allowed.
+            </mat-error>
+            <mat-error *ngIf="addvisitorForm.get('phoneNumber')?.hasError('required')">
+              *Required Field
             </mat-error>
         </mat-form-field>
     </div>
@@ -45,6 +51,9 @@
           <input matInput formControlName="personInContact" >
           <mat-error *ngIf="addvisitorForm.get('personInContact')?.hasError('alphabetOnly')">
             Only alphabetic characters are allowed.
+          </mat-error>
+          <mat-error *ngIf="addvisitorForm.get('personInContact')?.hasError('required')">
+            *Required Field
           </mat-error>
       </mat-form-field>         
           </div>
@@ -71,7 +80,10 @@
                     {{option.purposeName }}
                   </mat-option>
                   <mat-option [value]="{ purposeName: 'Other', purposeId: null }">Other</mat-option>
-              </mat-autocomplete>             
+              </mat-autocomplete> 
+              <mat-error *ngIf="addvisitorForm.get('purposeofvisitId')?.hasError('required')">
+                *Required Field
+              </mat-error>            
               </mat-form-field>          
               <div *ngIf="isOtherPurposeSelected">
                 <mat-form-field class="largeInput" appearance="outline">
@@ -82,9 +94,7 @@
                          (focusout)="onPurposeFocusOut()">
                 </mat-form-field>
               </div>          
-              <div *ngIf="addvisitorForm.get('purposeofvisitId')?.hasError('required') && addvisitorForm.get('purposeofvisitId')?.touched" class="astrik">
-                *Name of the purpose is required.
-              </div>
+            
             </div>
           </div>
           
@@ -97,9 +107,17 @@
         <mat-radio-group formControlName="carryDevice" (change)="onCarryDeviceChange($event.value)">
           <mat-radio-button [value]=1>Yes</mat-radio-button>
           <mat-radio-button [value]=0>No</mat-radio-button>
-        </mat-radio-group>
+        </mat-radio-group> 
+        
+        <mat-error *ngIf="addvisitorForm.get('carryDevice')?.hasError('required')">
+          *Required Field
+        </mat-error>   
+      
       </div>
     </div>
+    
+      
+    
   </div>
   <div *ngIf="showDeviceOption">
     <div formArrayName="items">
@@ -122,6 +140,9 @@
                 </mat-option>
                 <mat-option [value]="{ deviceName: 'Other', deviceId: null }">Other</mat-option>
               </mat-autocomplete>
+              <mat-error *ngIf="addvisitorForm.get('purposeofvisitId')?.hasError('required')">
+                *Required Field
+              </mat-error>  
             </mat-form-field>
           </div>
           <div class="col d-flex align-items-end">
