@@ -9,6 +9,7 @@ import { BootingPageComponent } from './pages/booting-page/booting-page.componen
 export const routes: Routes = [
     {
         path:'',component:BootingPageComponent
+
     },
 
     {
