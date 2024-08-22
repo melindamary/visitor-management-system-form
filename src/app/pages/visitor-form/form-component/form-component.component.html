@@ -29,19 +29,7 @@
               *Required Field
             </mat-error>
         </mat-form-field>
-    </div>
-    <!-- <div *ngIf="addvisitorForm.get('phoneNumber')?.hasError('required')&& addvisitorForm.get('phoneNumber')?.touched" class="astrik">
-      *Phone Number is required.
-    </div> -->
-      <!-- <div class="col">
-          <label class="inputLabel">Phone Number<span class="astrik">*</span></label>
-                     
-              <input type="text"  class="form-control smallInput p-inputtext" id="phoneNumber" name="phoneNumber" required
-              formControlName="phoneNumber" placeholder="">
-              <label for="phoneNumber">Enter the Phone Number</label>
-             
-            
-      </div> -->
+    </div>   
   </div>
   <div class="row mb-3">
     <div class="col">
@@ -59,9 +47,7 @@
           </div>
       </div>
      
- <!-- <div *ngIf="addvisitorForm.get('personInContact')?.hasError('required')&& addvisitorForm.get('personInContact')?.touched"class="astrik">
-            *Name of the host is required.
-          </div>  -->
+ 
           <div class="row mb-3">
             <div class="col">
               <label class="inputLabel">Purpose Of Visit<span class="astrik">*</span></label>
@@ -170,14 +156,16 @@
   
         <!-- Show the serial number input for any selected device -->
         <div class="row mb-3" *ngIf="item.get('deviceCarried')?.value && !item.get('isOtherDeviceSelected')?.value">
-          <div class="">
+          <div class="SerialNumber">
             <mat-form-field appearance="outline" class=" serialInput">
               <mat-label>Enter Serial Number</mat-label>
               <input matInput name="DeviceSerialnumber" id="serialNumber" formControlName="DeviceSerialnumber">
+           
+              <mat-error *ngIf="item.get('DeviceSerialnumber')?.hasError('required') ">
+                *Serial Number is required.
+              </mat-error> 
             </mat-form-field>
-            <div *ngIf="item.get('DeviceSerialnumber')?.hasError('required') && item.get('DeviceSerialnumber')?.touched" class="astrik">
-              *Serial Number is required.
-            </div>
+          
           </div>
         </div>
       </div>
@@ -223,7 +211,21 @@
   </div>
   
 </form>
-
+<!-- <div *ngIf="addvisitorForm.get('personInContact')?.hasError('required')&& addvisitorForm.get('personInContact')?.touched"class="astrik">
+            *Name of the host is required.
+          </div>  -->
+ <!-- <div *ngIf="addvisitorForm.get('phoneNumber')?.hasError('required')&& addvisitorForm.get('phoneNumber')?.touched" class="astrik">
+      *Phone Number is required.
+    </div> -->
+      <!-- <div class="col">
+          <label class="inputLabel">Phone Number<span class="astrik">*</span></label>
+                     
+              <input type="text"  class="form-control smallInput p-inputtext" id="phoneNumber" name="phoneNumber" required
+              formControlName="phoneNumber" placeholder="">
+              <label for="phoneNumber">Enter the Phone Number</label>
+             
+            
+      </div> -->
 <!-- [ngClass]="{ 'plusBtnHide': !isItemEntered(i) }" -->
   <!-- <p-floatLabel> 
             <p-autoComplete class="customInput"                            

@@ -180,3 +180,101 @@ a{
     margin-left:10px ;
 
 }
+@media screen and (max-width: 768px) {
+    .astrik {
+      color: red;
+      font-size: 14px; /* Adjust font size for mobile */
+    }
+  
+    .plusBtn {
+      border: none;
+      font-size: 14px; /* Adjust font size for mobile */
+    }
+  
+    .plusBtnHide {
+      display: none;
+    }
+  
+    .astrik-white {
+      color: white;
+      font-size: 14px; /* Adjust font size for mobile */
+    }
+  
+    .capturedPhoto {
+      margin-left: -14px; /* Adjust margin for mobile */
+      margin-right: 18px; /* Adjust margin for mobile */
+      width: 60px; /* Adjust width for mobile */
+      height: 50px; /* Adjust height for mobile */
+    }
+  
+    .submitButtonHieght {
+      height: 48px; /* Adjust height for mobile */
+    }
+  
+    .disabled-button, .button3 {
+      width: 150px; /* Adjust width for mobile */
+      padding: 10px 20px; /* Adjust padding for mobile */
+      font-size: 14px; /* Adjust font size for mobile */
+      margin: 5px 10px; /* Adjust margin for mobile */
+    }
+  
+    .inputLabel, .inputLabelSerial {
+      font-size: 14px; /* Adjust font size for mobile */
+      margin-bottom: 8px; /* Adjust margin for mobile */
+    }
+  
+    .plus, .minus {
+       /* Adjust margin for mobile */
+      margin-left: -10px; /* Adjust margin for mobile */
+      height: 40px; /* Adjust size for mobile */
+      width: 40px; /* Adjust size for mobile */
+    }
+  
+    .deviceControl {
+        margin-top: -112px;       
+        margin-right: -46px; /* Adjust margin for mobile */
+    }
+  
+    .largeInput, .otherDevicelargeInput, .DeviceInput {
+      width: 100%; /* Full width for mobile */
+      margin-right: 5px; /* Adjust margin for mobile */
+    }
+  
+    .serialInput, .mediumInput {
+      width: 100%; /* Full width for mobile */
+      height: 40px; /* Adjust height for mobile */
+      margin-left: 10px; /* Adjust margin for mobile */
+    }
+  
+    .carryDevice {
+      margin-left: 0; /* Remove large margin for mobile */
+    }
+  
+    .visitorForm {
+      width: 100%; /* Full width for mobile */
+      padding: 0 15px; /* Add padding for mobile */
+    }
+  
+    .radio-container, .mat-radio-group {
+      flex-direction: column; /* Stack radio buttons vertically for mobile */
+      align-items: flex-start; /* Align items to the start */
+    }
+  
+    .inputRadioLabel, .mat-radio-button {
+      margin-right: 0; /* Remove margin for mobile */
+      margin-bottom: 5px; /* Add margin-bottom for spacing */
+    }
+  
+    .row {
+      flex-direction: column; /* Stack columns vertically for mobile */
+      
+    }
+  .SerialNumber{
+    margin-bottom: 10px;
+  }
+    .smallInput {
+      width: 100%; /* Full width for mobile */
+      margin-right: 0; /* Adjust margin for mobile */
+    }
+  }
+  

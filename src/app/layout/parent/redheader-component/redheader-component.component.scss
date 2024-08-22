@@ -1,22 +1,26 @@
-.red-header{
-    width:100%;
+.red-header {
+    width: 100%;
     background: #DC143C;
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: white;
     height: 50px;
-    
 }
-.datetime{
-    margin-top: 10px;
+
+.date-time-container {
+    display: flex;
+    align-items: center;
     margin-right: 20px;
-   
 }
-.time{
-    margin-right: 20px;
-    height: 40px;
+
+.date, .time {
+    margin-top: 0px;
+    margin-right: 20px; /* Space between date and time */
 }
-img{
+
+img {
+    margin: 5px 5px 5px 10px;
+    padding: 1px;
     height: 40px;
 }

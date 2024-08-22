@@ -14,7 +14,7 @@ constructor(private router: Router){}
 ngOnInit(): void {
   
   setTimeout(() => {
-    this.router.navigate(['/']);
+    this.router.navigate(['/welcomepage']);
   }, 7000); 
 }
 
