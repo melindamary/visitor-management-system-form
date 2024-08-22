@@ -33,13 +33,7 @@ export class BootingPageComponent {
       this.locations = response;
     });
   }
-  // getInitialDummyData(): LocationDetails[] {
-  //   return [
-  //     { id: 1, name: 'California', address: 'Some address in California', phone: null, createdDate: new Date().toISOString() },
-  //     { id: 2, name: 'Texas', address: 'Some address in Texas', phone: null, createdDate: new Date().toISOString() },
-  //     { id: 3, name: 'Johannesburg', address: 'Some address in Johannesburg', phone: null, createdDate: new Date().toISOString() }
-  //   ];
-  // }
+
   onLocationChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     this.selectedLocationId = Number(selectElement.value);
@@ -54,7 +48,7 @@ export class BootingPageComponent {
 
   confirmSelection(): void {
     if (this.selectedLocationId && this.selectedLocationName) {
-      localStorage.setItem('LocationId', this.selectedLocationId.toString());
+      localStorage.setItem('officeLocationId', this.selectedLocationId.toString());
       localStorage.setItem('LocationName', this.selectedLocationName);
       this.showConfirmationMessage = false; // Hide the message after saving
     }

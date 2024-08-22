@@ -1,24 +1,50 @@
-<!-- <div>
-    <select [(ngModel)]="selectedLocationId">
-      <option *ngFor="let location of locations" [value]="location.id">{{ location.name }}</option>
-    </select>
-    <button (click)="onSubmit()">Submit</button>
-  </div>
-  
-  <div *ngIf="showConfirmationMessage" class="confirmation-message">
-    <p>Are you sure you want to continue with the location "{{ selectedLocationName }}"?</p>
-    <span (click)="confirmSelection()" class="arrow">➔</span>
-  </div>
-   -->
-   <div>
-    <select id="locationSelect" (change)="onLocationChange($event)">
-      <option *ngFor="let location of locations" [value]="location.id">{{ location.name }}</option>
-    </select>
-  </div>
-  
-  <div *ngIf="showConfirmationMessage" class="confirmation-message">
-    <p>Are you sure you want to continue with the location "{{ selectedLocationName }}"?</p>
-    <span (click)="confirmSelection()" class="arrow-mark">➔</span>
-  </div>
-  
-  
+
+   <div class="top-bar">
+    <div><img src="experion-logo.png"/></div>
+</div>
+<div class="login-body">
+    <!-- <div class="img-container">
+        <img src="login-screen-bg.png" alt="login">
+    </div> -->
+    <!-- <div class="login-form-container">
+      <div class="location-selection-container">
+        <h2>Select Your Location</h2>
+        <div class="select-wrapper">
+          <select id="locationSelect" (change)="onLocationChange($event)">
+            <option value="" disabled selected>Choose a location</option>
+            <option *ngFor="let location of locations" [value]="location.id">{{ location.name }}</option>
+          </select>
+        </div>
+        
+        <div *ngIf="showConfirmationMessage" class="confirmation-message">
+          <p>Are you sure you want to continue with the location "{{ selectedLocationName }}"?</p>
+          <button (click)="confirmSelection()" class="confirm-button">
+            Confirm <span class="arrow-mark">→</span>
+          </button>
+        </div>
+      </div>
+    </div>   -->
+    <div class="location-selection-container">
+      <div class="product-name">
+        <p>Visit<span>Ex</span></p>
+      </div>
+      
+      <h2>Select Your Location</h2>
+      
+      <div class="select-wrapper">
+        <select id="locationSelect" (change)="onLocationChange($event)">
+          <option value="" disabled selected>Choose a location</option>
+          <option *ngFor="let location of locations" [value]="location.id">{{ location.name }}</option>
+        </select>
+      </div>
+      
+      <div class="confirmation-area">
+        <div *ngIf="showConfirmationMessage" class="confirmation-message">
+          <p>Are you sure you want to continue with the location "{{ selectedLocationName }}"?</p>
+        </div>
+        <button *ngIf="showConfirmationMessage" (click)="confirmSelection()" class="confirm-button">
+          Confirm <span class="arrow-mark">→</span>
+        </button>
+      </div>
+    </div>
+</div>
