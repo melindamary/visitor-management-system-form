@@ -83,8 +83,8 @@ private animationInterval: any;
 constructor(private router: Router, private ngZone: NgZone) {}
 ngOnInit(): void {
   this.setBackgroundImages();
-  this.createGrid();
-  this.startAnimation();
+  // this.createGrid();
+  // this.startAnimation();
 }
 createGrid() {
   for (let i = 0; i < 200; i++) {
