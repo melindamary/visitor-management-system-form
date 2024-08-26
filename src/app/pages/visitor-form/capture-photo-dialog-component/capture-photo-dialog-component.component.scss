@@ -1,32 +1,75 @@
-.button3{
-    border: none;
-    border-radius: 5px;
-    width: 200px;
-    padding: 15px 32px;
-    align-items: center;
-    text-decoration: none;
-    display: inline-flex; /* Use inline-flex instead of inline-block */
-    justify-content: center; /* Center items horizontally */
-    font-size: 16px;
-    margin: 10px 20px;
-    cursor: pointer;
-    background-color: #DC143C; 
-    color: white; 
-    border: 2px solid #DC143C;
+.button3 {
+  border: none;
+  border-radius: 5px;
+  width: 200px;
+  padding: 15px 32px;
+  align-items: center;
+  text-decoration: none;
+  display: inline-flex; /* Use inline-flex instead of inline-block */
+  justify-content: center; /* Center items horizontally */
+  font-size: 16px;
+  margin: 10px 20px;
+  cursor: pointer;
+  background-color: #684683; 
+  color: white; 
+  border: 2px solid #684683;
 }
 
+
 .button-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.captured-image-container {
+  margin-top: 10px;
+  text-align: center; /* Center the image on smaller screens */
+}
+
+@media (max-width: 768px) {
+  .button-container {
+      flex-direction: row;
+      align-items: center;
   }
 
-  .captured-image-container {
-    margin-top: 10px;
+::ng-deep .cam-window {
+    width: 800px;
+    height: 600px;
+    
+}
+.mat-dialog-content{
+  overflow-y: scroll;
+}
+::ng-deep .webcam-wrapper{
+ width: 200%;
+}
+
+::ng-deep .cam-window .webcam-wrapper {
+  height: 121%;
+  width: 200%;
+}
+
+::ng-deep .cam-window video,
+::ng-deep .cam-window canvas {
+  height: 88%;
+        width: 50%;
+}
+
+
+ 
+ 
+  .button3 {
+     
+      width: 38%;
+        margin: 10px 10px;
+        font-size: 13px;
+        padding: 10px 10px;
   }
-  
-  .button-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+
+  .captured-image-container img {
+      width: 100%; /* Make the image responsive */
+      max-width: 300px; /* Set a maximum width */
+      height: auto; /* Maintain aspect ratio */
   }
+}

@@ -357,7 +357,7 @@ openDialog(): void {
       if (selectedOption.deviceName === 'Other') {
         item.patchValue({
           isOtherDeviceSelected: true,
-          otherDevice: '', // Clear the field for "Other"
+           // Clear the field for "Other"
           DeviceSerialnumber: '', // Clear serial number
          
         });
@@ -376,6 +376,7 @@ openDialog(): void {
       const formGroup = this.items.controls[index] as FormGroup;
       const isOtherDeviceSelected = formGroup.get('isOtherDeviceSelected')?.value;
       const otherDeviceValue = formGroup.get('otherDevice')?.value;
+    console.log("other device",otherDeviceValue);
     
       if (isOtherDeviceSelected && otherDeviceValue) {
         this.storeOtherDevice(otherDeviceValue, index);
@@ -388,7 +389,7 @@ openDialog(): void {
           console.log('Other device added successfully:', response);
           const formGroup = this.items.at(index) as FormGroup;
           formGroup.patchValue({
-            deviceCarry: { deviceId: response.id, deviceName: value },
+            deviceCarried: { deviceId: response.id, deviceName: value },
           });
           // this.logFormDataBeforeSubmit();
         },
@@ -459,10 +460,14 @@ onSubmit(): void {
     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Please fill all the details!' });
     return;
   }
+  console.log("formdata items",formData.items);
+  
   const selectedDevice = formData.items
-    .filter((item: any) => item.deviceCarry && item.DeviceSerialnumber)
+    .filter((item: any) => item.deviceCarried || item.DeviceSerialnumber)
+// console.log("selected device",selectedDevice);
+
     .map((item: any) => ({
-      deviceId: item.deviceCarry.deviceId, // Access deviceId
+      deviceId: item.deviceCarried.deviceId, // Access deviceId
       serialNumber: item.DeviceSerialnumber
     }));
 

@@ -38,12 +38,12 @@
     
     background-color: #e94e6d; 
     color: white; 
-    border: 2px solid #DC143C;
+    border: 2px solid #684683;
     cursor: not-allowed;
   }
   
   .enabled-button {
-    background-color:#DC143C; /* Blue */
+    background-color:#684683; /* Blue */
     color: #fff; /* White */
   }
   
@@ -62,9 +62,9 @@
     font-size: 16px;
     margin: 10px 20px;
     cursor: pointer;
-    background-color: #DC143C; 
+    background-color: #684683; 
     color: white; 
-    border: 2px solid #DC143C;
+    border: 2px solid #684683;
 }
 .button span {
     margin: 0 5px; /* Adjust the spacing as needed */
@@ -76,12 +76,13 @@
     margin-bottom: 10px;
 }
 .plus{   
+    color: #684683;
     cursor: pointer;
     margin-top: 40px;
     /* margin-right: -33px; */
-    margin-left: -17px;
-    height: 25px;
-    width: 25px;
+    margin-left: -36px;
+    // height: 25px;
+    // width: 25px;
 }
 .deviceControl{
     display: flex;
@@ -89,6 +90,7 @@
     margin-right: -25px;
 }
 .minus{
+  color: #684683;
     cursor: pointer;
     margin-top: 40px;
     /* margin-right: -33px; */
@@ -113,7 +115,7 @@ a{
 }
 .serialInput{
     width: 600px;
-    height: 50px;
+   
     margin-left: 33px;
 }
 .DeviceInput {
@@ -199,12 +201,15 @@ a{
       color: white;
       font-size: 14px; /* Adjust font size for mobile */
     }
-  
+  // .form-check{
+  //   margin-top: 10px;
+  // }
     .capturedPhoto {
-      margin-left: -14px; /* Adjust margin for mobile */
-      margin-right: 18px; /* Adjust margin for mobile */
-      width: 60px; /* Adjust width for mobile */
-      height: 50px; /* Adjust height for mobile */
+      margin-left: 169px;
+     
+      width: 60px;
+      height: 50px;
+      margin-top: -71px;
     }
   
     .submitButtonHieght {
@@ -224,27 +229,34 @@ a{
     }
   
     .plus, .minus {
+     font-size: 16px;
        /* Adjust margin for mobile */
-      margin-left: -10px; /* Adjust margin for mobile */
-      height: 40px; /* Adjust size for mobile */
-      width: 40px; /* Adjust size for mobile */
+      // margin-left: -10px; /* Adjust margin for mobile */
+      // height: 40px; /* Adjust size for mobile */
+      // width: 40px; /* Adjust size for mobile */
     }
-  
+  .placeHolder{
+    font-size: 13px;
+  }
     .deviceControl {
         margin-top: -112px;       
-        margin-right: -46px; /* Adjust margin for mobile */
+        margin-right: -40px; /* Adjust margin for mobile */
     }
   
-    .largeInput, .otherDevicelargeInput, .DeviceInput {
+    .largeInput,  .DeviceInput{
       width: 100%; /* Full width for mobile */
       margin-right: 5px; /* Adjust margin for mobile */
     }
-  
-    .serialInput, .mediumInput {
-      width: 100%; /* Full width for mobile */
-      height: 40px; /* Adjust height for mobile */
-      margin-left: 10px; /* Adjust margin for mobile */
+    .serialInput,.otherDevicelargeInput{
+      width: 84%; /* Full width for mobile */
+      margin-right: -5px;
     }
+  
+    // .serialInput, .mediumInput {
+    //   width: 100%; /* Full width for mobile */
+    //   height: 40px; /* Adjust height for mobile */
+    //   margin-left: 10px; /* Adjust margin for mobile */
+    // }
   
     .carryDevice {
       margin-left: 0; /* Remove large margin for mobile */
@@ -270,6 +282,7 @@ a{
       
     }
   .SerialNumber{
+    margin-top: -31px;
     margin-bottom: 10px;
   }
     .smallInput {

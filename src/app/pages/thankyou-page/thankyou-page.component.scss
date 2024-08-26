@@ -17,3 +17,14 @@
     margin-top:-50px;  
     margin-right:-90px;
 }
+@media (max-width: 768px) {
+    .gif {
+        width: 90%; /* Increase width to use more of the screen */
+        margin-top: -30px; /* Adjust top margin */
+    }
+    
+    .body {
+        height: auto; /* Allow height to adjust based on content */
+        padding: 10px; /* Increase padding for small screens */
+    }
+}

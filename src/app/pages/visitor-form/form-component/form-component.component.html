@@ -5,7 +5,7 @@
     <div class="col">
       <label  class="inputLabel">Name<span class="astrik">*</span> </label>
       <mat-form-field appearance="outline" class="smallInput form-control">
-          <mat-label>Enter the Name</mat-label>
+          <mat-label class="placeHolder">Enter the Name</mat-label>
           <input matInput formControlName="name" id="name">
           <mat-error *ngIf="addvisitorForm.get('name')?.hasError('alphabetOnly')">
             *Only alphabetic characters are allowed.
@@ -20,7 +20,7 @@
       <div class="col">
         <label  class="inputLabel">Phone Number<span class="astrik">*</span> </label>
         <mat-form-field appearance="outline" class="smallInput form-control">
-            <mat-label>Enter the Phone Number</mat-label>
+            <mat-label class="placeHolder">Enter the Phone Number</mat-label>
             <input matInput  id="phoneNumber" name="phoneNumber" formControlName="phoneNumber">
             <mat-error *ngIf="addvisitorForm.get('phoneNumber')?.hasError('numberOnly')&& addvisitorForm.get('phoneNumber')?.touched" class="astrik">
               Only numbers are allowed.
@@ -35,7 +35,7 @@
     <div class="col">
       <label  class="inputLabel">Person to Meet<span class="astrik">*</span> </label>
       <mat-form-field appearance="outline" class="largeInput form-control">
-          <mat-label>Enter the name of the host</mat-label>
+          <mat-label class="placeHolder">Enter the name of the host</mat-label>
           <input matInput formControlName="personInContact" >
           <mat-error *ngIf="addvisitorForm.get('personInContact')?.hasError('alphabetOnly')">
             Only alphabetic characters are allowed.
@@ -52,7 +52,7 @@
             <div class="col">
               <label class="inputLabel">Purpose Of Visit<span class="astrik">*</span></label>
               <mat-form-field class="largeInput" appearance="outline">
-                <mat-label>Select a Purpose of Visit</mat-label>
+                <mat-label class="placeHolder">Select a Purpose of Visit</mat-label>
                 <input type="text"
                        matInput
                        formControlName="purposeofvisit"
@@ -73,7 +73,7 @@
               </mat-form-field>          
               <div *ngIf="isOtherPurposeSelected">
                 <mat-form-field class="largeInput" appearance="outline">
-                  <mat-label>Enter Other Purpose of Visit</mat-label>
+                  <mat-label class="placeHolder">Enter Other Purpose of Visit</mat-label>
                   <input type="text"
                          matInput
                          formControlName="otherPurpose"
@@ -112,7 +112,7 @@
           <div class="col">
             <label class="inputLabel">Device Carried<span class="astrik">*</span></label>
             <mat-form-field class="DeviceInput" appearance="outline">
-              <mat-label>Select a Device</mat-label>
+              <mat-label class="placeHolder">Select a Device</mat-label>
               <input type="text"
                      matInput     
                      (focus)="onFocus(i)"
@@ -133,11 +133,11 @@
           </div>
           <div class="col d-flex align-items-end">
             <div class="deviceControl">
-            <i class="material-icons astrik plus" 
+            <i class="material-icons plus" 
             [class.disabled]="!isInputFilled"
             [attr.disabled]="!isInputFilled ? true : null"
             matTooltip="Add Device" (click)="addItem(i)">add_circle</i>
-            <i *ngIf="i > 0" class="material-icons astrik minus" 
+            <i *ngIf="i > 0" class="material-icons  minus" 
            matTooltip="Remove Device" (click)="removeItem(i)">remove_circle</i>   
           </div>
 
@@ -148,7 +148,7 @@
         <div class="row mb-3" *ngIf="item.get('isOtherDeviceSelected')?.value">
           <div class="">
             <mat-form-field appearance="outline" class="otherDevicelargeInput">
-              <mat-label>Enter Other Device</mat-label>
+              <mat-label class="placeHolder">Enter Other Device</mat-label>
               <input matInput formControlName="otherDevice" (focusout)="onOtherDeviceFocusOut(i)" >
             </mat-form-field>
           </div>
@@ -157,8 +157,8 @@
         <!-- Show the serial number input for any selected device -->
         <div class="row mb-3" *ngIf="item.get('deviceCarried')?.value && !item.get('isOtherDeviceSelected')?.value">
           <div class="SerialNumber">
-            <mat-form-field appearance="outline" class=" serialInput">
-              <mat-label>Enter Serial Number</mat-label>
+            <mat-form-field appearance="outline" class="serialInput">
+              <mat-label class="placeHolder">Enter Serial Number</mat-label>
               <input matInput name="DeviceSerialnumber" id="serialNumber" formControlName="DeviceSerialnumber">
            
               <mat-error *ngIf="item.get('DeviceSerialnumber')?.hasError('required') ">

@@ -13,9 +13,9 @@ export class ThankyouPageComponent {
 constructor(private router: Router){}
 ngOnInit(): void {
   
-  setTimeout(() => {
-    this.router.navigate(['/welcomepage']);
-  }, 7000); 
+  // setTimeout(() => {
+  //   this.router.navigate(['/welcomepage']);
+  // }, 7000); 
 }
 
 }

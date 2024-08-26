@@ -1,6 +1,6 @@
 .red-header {
     width: 100%;
-    background: #DC143C;
+    background: #684683;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -14,6 +14,21 @@
     margin-right: 20px;
 }
 
+.product-name {
+    text-align: center;
+    margin-bottom: 1rem;
+   visibility: hidden;
+    
+    p {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 0;
+      
+      span {
+        color: #080808;
+      }
+    }
+  }
 .date, .time {
     margin-top: 0px;
     margin-right: 20px; /* Space between date and time */
@@ -23,4 +38,28 @@ img {
     margin: 5px 5px 5px 10px;
     padding: 1px;
     height: 40px;
+}
+@media screen and (max-width: 600px) {
+    .red-header {
+       
+        
+        height: auto;
+        padding: 10px;
+    }
+
+    .date-time-container {
+        display: none; /* Hide date and time on mobile */
+    }
+
+    .date, .time {
+        margin-right: 0;
+        font-size: 12px; /* Adjusted for mobile */
+    }
+    .product-name {
+        visibility: visible;
+    }
+    img {
+        margin: 0 0 10px 0;
+        height: 30px; /* Adjusted height for mobile */
+    }
 }
