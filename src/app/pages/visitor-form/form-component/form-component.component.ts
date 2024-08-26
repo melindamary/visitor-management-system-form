@@ -79,8 +79,10 @@ export class FormComponentComponent {
       personInContact: ['',[ Validators.required,alphabetValidator()]],
       purposeofvisit: ['', Validators.required],
       purposeofvisitId: ['', Validators.required],
+      deviceCarried:['',Validators.required],
+      otherDevice:['',Validators.required],
       carryDevice: ['',Validators.required],
-      otherPurpose: [''],
+      otherPurpose: ['',Validators.required],
       items: this.fb.array([this.createItemFormGroup()]), // Initialize with one item
       policy: ['', Validators.required]
     });
@@ -275,7 +277,8 @@ openDialog(): void {
       return this.fb.group({
         deviceCarried: ['', Validators.required],
         DeviceSerialnumber: ['', Validators.required],
-        otherDevice: [''],
+        otherDevice: ['',Validators.required],
+        otherDeviceCarried:[''],
         isOtherDeviceSelected: [false],
         deviceControl: this.fb.control('')
       });
@@ -389,7 +392,7 @@ openDialog(): void {
           console.log('Other device added successfully:', response);
           const formGroup = this.items.at(index) as FormGroup;
           formGroup.patchValue({
-            deviceCarried: { deviceId: response.id, deviceName: value },
+            otherDeviceCarried: { deviceId: response.id, deviceName: value },
           });
           // this.logFormDataBeforeSubmit();
         },
@@ -462,14 +465,36 @@ onSubmit(): void {
   }
   console.log("formdata items",formData.items);
   
-  const selectedDevice = formData.items
-    .filter((item: any) => item.deviceCarried || item.DeviceSerialnumber)
-// console.log("selected device",selectedDevice);
+  let selectedDevice = formData.items.map((item: any) => {
+    let deviceId = null;
+    let serialNumber = item.DeviceSerialnumber || null;
+  
+    if (item.deviceCarried && item.deviceCarried.deviceId) {
+      deviceId = item.deviceCarried.deviceId;
+    }
+  
+    if (item.otherDeviceCarried && item.otherDeviceCarried.deviceId) {
+      deviceId = item.otherDeviceCarried.deviceId;
+    }
+  
+    console.log("Constructed deviceId:", deviceId);
+  
+    return {
+      deviceId,
+      serialNumber,
+    };
+  });
+  
+  console.log("Final selectedDevice array:", selectedDevice);
+  
+  // Filter out any items that didn't have a valid deviceId or serialNumber
+  // selectedDevice = selectedDevice.filter((item: any) => item.deviceId || item.serialNumber);
+  
+  // console.log("selectedDevice2", selectedDevice);
+  
 
-    .map((item: any) => ({
-      deviceId: item.deviceCarried.deviceId, // Access deviceId
-      serialNumber: item.DeviceSerialnumber
-    }));
+
+
 
   console.log('Selected Devices:', selectedDevice); // Log the selected devices
   const visitorPayload = {

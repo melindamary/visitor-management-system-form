@@ -78,6 +78,9 @@
                          matInput
                          formControlName="otherPurpose"
                          (focusout)="onPurposeFocusOut()">
+                         <mat-error *ngIf="addvisitorForm.get('otherPurpose')?.hasError('required')">
+                          *Required Field
+                        </mat-error>  
                 </mat-form-field>
               </div>          
             
@@ -126,7 +129,7 @@
                 </mat-option>
                 <mat-option [value]="{ deviceName: 'Other', deviceId: null }">Other</mat-option>
               </mat-autocomplete>
-              <mat-error *ngIf="addvisitorForm.get('purposeofvisitId')?.hasError('required')">
+              <mat-error *ngIf="addvisitorForm.get('deviceCarried')?.hasError('required')">
                 *Required Field
               </mat-error>  
             </mat-form-field>
@@ -149,7 +152,10 @@
           <div class="">
             <mat-form-field appearance="outline" class="otherDevicelargeInput">
               <mat-label class="placeHolder">Enter Other Device</mat-label>
-              <input matInput formControlName="otherDevice" (focusout)="onOtherDeviceFocusOut(i)" >
+              <input matInput formControlName="otherDevice"  (focusout)="onOtherDeviceFocusOut(i)" >
+              <mat-error *ngIf="addvisitorForm.get('otherDevice')?.hasError('required')">
+                *Required Field
+              </mat-error> 
             </mat-form-field>
           </div>
         </div>
