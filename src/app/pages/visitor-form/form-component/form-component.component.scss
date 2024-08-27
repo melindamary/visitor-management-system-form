@@ -1,3 +1,5 @@
+
+
 .astrik{
     color:red;  
 
@@ -10,7 +12,7 @@
     display: none;
 }
 .astrik-white{
-    color:white;  
+    color:rgb(252, 252, 252);  
 
 }
 .capturedPhoto{
@@ -167,12 +169,27 @@ a{
 .row{
     display: flex;    
 }
+.countryCode{
+ 
+ 
+}
+.phone{
+ width: 337px;
+ margin-right: 10px;
+ margin-left: 5px;
+}
+.phonenumber{
+  display: flex;
+}
+::ng-deep .lib-country-list span{
+  visibility: hidden;
+}
 .col {
     display: flex;
     flex-direction: column;
   }
 .smallInput {
-    width: 407px;
+    width: 336px;
     margin-right: 10px;
 }
 .mediumInput {

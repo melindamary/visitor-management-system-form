@@ -19,16 +19,28 @@
      
       <div class="col">
         <label  class="inputLabel">Phone Number<span class="astrik">*</span> </label>
-        <mat-form-field appearance="outline" class="smallInput form-control">
+        <div class="phonenumber">
+          <div class="code">
+        <lib-country-list class="countryCode"[selectedCountryConfig]="selectedCountryConfig" [countryListConfig]="countryListConfig" [ariaPlaceholder]=""
+      (onCountryChange)="onCountryChange($event)"></lib-country-list>
+     
+    </div>
+
+    <div class="number">
+        <mat-form-field appearance="outline" class="phone form-control">
+          
             <mat-label class="placeHolder">Enter the Phone Number</mat-label>
-            <input matInput  id="phoneNumber" name="phoneNumber" formControlName="phoneNumber">
+            <input matInput  id="phoneNumber" name="phoneNumber" formControlName="phoneNumber" (change)="fullPhoneNumber()">
             <mat-error *ngIf="addvisitorForm.get('phoneNumber')?.hasError('numberOnly')&& addvisitorForm.get('phoneNumber')?.touched" class="astrik">
-              Only numbers are allowed.
+              Phone number must be a numeric value between 6 and 14 digits long.
             </mat-error>
             <mat-error *ngIf="addvisitorForm.get('phoneNumber')?.hasError('required')">
               *Required Field
             </mat-error>
+           
         </mat-form-field>
+      </div>
+      </div>
     </div>   
   </div>
   <div class="row mb-3">

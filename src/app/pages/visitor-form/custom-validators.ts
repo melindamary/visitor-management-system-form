@@ -33,7 +33,7 @@ export function alphabetValidator(): ValidatorFn {
 export function numberValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     // Check if the control's value is a valid number (non-empty and consisting of digits only)
-    const valid = /^\d*$/.test(control.value);
+    const valid = /^\d{6,14}$/.test(control.value);;
     return valid ? null : { numberOnly: true };
   };
 }

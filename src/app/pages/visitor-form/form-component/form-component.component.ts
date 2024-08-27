@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy,ChangeDetectorRef,Component } from '@angular/core';
 import {  AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormsModule,isFormControl,ReactiveFormsModule, Validators } from '@angular/forms';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { IConfig, NgxCountriesDropdownModule } from 'ngx-countries-dropdown';
 import { Router, RouterLink } from '@angular/router';
 import { DataserviceService } from '../../../services/VisitorFormServices/dataservice.service';
 import { PurposeResponse } from '../../../Models/IPurposeResponse';
@@ -27,7 +28,7 @@ import { alphabetValidator, numberValidator } from '../custom-validators';
   selector: 'app-form-component',
   standalone: true,
   imports: [RouterLink,NgFor,NgIf,FormsModule,ReactiveFormsModule,NgClass,MatAutocompleteModule,MatTooltipModule,
-     MatFormFieldModule,MatIconModule,MatInputModule,AsyncPipe,MatRadioModule,MatCheckboxModule,
+     MatFormFieldModule,MatIconModule,MatInputModule,AsyncPipe,MatRadioModule,MatCheckboxModule,NgxCountriesDropdownModule,
    WebcamModule,MessagesModule,ToastModule],
   templateUrl: './form-component.component.html',
   styleUrl: './form-component.component.scss',
@@ -55,7 +56,7 @@ export class FormComponentComponent {
   selectedContact: string[]  | null = null;
   isInputFilled :boolean= false;
   purposes: PurposeResponse[] = [];
-  
+  countryCode:string=''
   selectedPurpose: PurposeResponse | undefined ;
 
   Devices: DeviceResponse[] = [];
@@ -75,6 +76,8 @@ export class FormComponentComponent {
   {
     this.addvisitorForm = this.fb.group({
       name: ['', [Validators.required,alphabetValidator()]],
+      fullNumber:['', Validators.required],
+      countryCode:['', Validators.required],
       phoneNumber: ['', [Validators.required,numberValidator()]],
       personInContact: ['',[ Validators.required,alphabetValidator()]],
       purposeofvisit: ['', Validators.required],
@@ -93,6 +96,32 @@ export class FormComponentComponent {
   //   console.log('onInput called:', this.deviceControl.value);
     
   // }
+  selectedCountryConfig: IConfig = {
+    hideCode: true,
+    hideName: true,
+    
+  };
+  countryListConfig: IConfig = {
+    hideCode: true,
+    
+  };
+
+
+  onCountryChange(country: any) {
+    // console.log(country.dialling_code);  
+     this.countryCode = country.dialling_code; 
+     this.fullPhoneNumber();
+    
+  }
+   fullPhoneNumber() {
+    const Number = this.addvisitorForm.get('phoneNumber')?.value;
+    const fullNumber =this.countryCode+Number
+    console.log(this.countryCode+Number);   
+    this.addvisitorForm.patchValue({
+      fullNumber:fullNumber
+           // Clear other purpose field
+    });    
+  }
 
   getDeviceCarriedControl(index: number): FormControl {
     const control = this.items.at(index).get('deviceCarried');
@@ -110,28 +139,7 @@ export class FormComponentComponent {
 
 
     this.loadDevicesCarried();  
-    // this.filteredDevice = this.items.at(0)?.get('deviceCarried')?.valueChanges.pipe(
-    //   startWith(''),
-    //   map(value => this._filterDevice(value || ''))
-    // ) ?? of([]);
-
-    // Subscribe to changes in the 'otherPurpose' field to handle 'Other' purpose
-    // this.addvisitorForm.get('otherPurpose')?.valueChanges.pipe(debounceTime(1000)).subscribe(value => {
-    //   if (this.isOtherPurposeSelected && value) {
-    //     this.storeOtherPurpose(value);
-    //   }
-    // });
-  
-    // Subscribe to changes in each item's 'otherDevice' field
-    // this.items.controls.forEach((control: AbstractControl, index: number) => {
-    //   const formGroup = control as FormGroup;
-    //   formGroup.addControl('isOtherDeviceSelected', new FormControl(false));
-    //   formGroup.get('otherDevice')?.valueChanges.pipe(debounceTime(1000)).subscribe(value => {
-    //     if (formGroup.get('isOtherDeviceSelected')?.value && value) {
-    //       this.storeOtherDevice(value, index);
-    //     }
-    //   });
-    // });
+    
   }
 
   onFocus(index:number){
@@ -436,8 +444,19 @@ onSubmit(): void {
   const imageData = this.capturedImage;
   const policy = formData.policy;
   const formSubmissionMode = "Kiosk";
+  const officeLocationId = localStorage.getItem('officeLocationId');
   console.log('Purpose ID:', formData.purposeofvisitId);
   console.log('Form Data:', formData);
+  if(!this.countryCode)
+  {
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Please fill the country code!' });
+    return;
+  }
+  if (!formData.name || !formData.phoneNumber || !formData.personInContact || !formData.purposeofvisitId || !policy || !imageData) {
+    console.error('One or more required fields are missing.');
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Please fill all the details!' });
+    return;
+  }
 
   if (!policy) {
     console.error('Policy not marked is empty.');
@@ -451,18 +470,14 @@ onSubmit(): void {
     return;
   }
 
-  const officeLocationId = localStorage.getItem('officeLocationId');
+  
   if (!officeLocationId) {
     console.error('Office location ID not found in local storage.');
     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Office location ID is required.' });
     return;
   }
   // Check if any of the required fields are missing
-  if (!formData.name || !formData.phoneNumber || !formData.personInContact || !formData.purposeofvisitId || !policy || !imageData) {
-    console.error('One or more required fields are missing.');
-    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Please fill all the details!' });
-    return;
-  }
+ 
   console.log("formdata items",formData.items);
   
   let selectedDevice = formData.items.map((item: any) => {
@@ -487,19 +502,15 @@ onSubmit(): void {
   
   console.log("Final selectedDevice array:", selectedDevice);
   
-  // Filter out any items that didn't have a valid deviceId or serialNumber
-  // selectedDevice = selectedDevice.filter((item: any) => item.deviceId || item.serialNumber);
-  
-  // console.log("selectedDevice2", selectedDevice);
   
 
 
 
 
-  console.log('Selected Devices:', selectedDevice); // Log the selected devices
+  // Log the selected devices
   const visitorPayload = {
     name: formData.name,
-    phoneNumber: formData.phoneNumber,
+    phoneNumber: formData.fullNumber,
     personInContact: formData.personInContact,
     purposeOfVisitId: formData.purposeofvisitId,
     officeLocationId: Number(officeLocationId),
@@ -521,12 +532,34 @@ onSubmit(): void {
     }
   );
 }
-   
-
-    
-
-
   }
+// Filter out any items that didn't have a valid deviceId or serialNumber
+  // selectedDevice = selectedDevice.filter((item: any) => item.deviceId || item.serialNumber);
+  
+  // console.log("selectedDevice2", selectedDevice);
+  
+  // this.filteredDevice = this.items.at(0)?.get('deviceCarried')?.valueChanges.pipe(
+    //   startWith(''),
+    //   map(value => this._filterDevice(value || ''))
+    // ) ?? of([]);
+
+    // Subscribe to changes in the 'otherPurpose' field to handle 'Other' purpose
+    // this.addvisitorForm.get('otherPurpose')?.valueChanges.pipe(debounceTime(1000)).subscribe(value => {
+    //   if (this.isOtherPurposeSelected && value) {
+    //     this.storeOtherPurpose(value);
+    //   }
+    // });
+  
+    // Subscribe to changes in each item's 'otherDevice' field
+    // this.items.controls.forEach((control: AbstractControl, index: number) => {
+    //   const formGroup = control as FormGroup;
+    //   formGroup.addControl('isOtherDeviceSelected', new FormControl(false));
+    //   formGroup.get('otherDevice')?.valueChanges.pipe(debounceTime(1000)).subscribe(value => {
+    //     if (formGroup.get('isOtherDeviceSelected')?.value && value) {
+    //       this.storeOtherDevice(value, index);
+    //     }
+    //   });
+    // });
     //   onDeviceSelected(selectedOption: any, index: number): void {
   //     const formGroup = this.items.at(index) as FormGroup;
   
