@@ -4,6 +4,14 @@
     color:red;  
 
 }
+.mat-mdc-radio-button.mat-accent{
+  --mdc-radio-selected-icon-color: #896CC7 !important;
+  --mdc-radio-selected-focus-icon-color: #896CC7 !important;
+     --mdc-radio-selected-hover-icon-color: #896CC7 !important; 
+     --mdc-radio-selected-icon-color: #896CC7 !important; 
+     --mdc-radio-selected-pressed-icon-color: #896CC7 !important;    
+    --mat-radio-checked-ripple-color: #896CC7 !important;
+}
 .plusBtn{
     border: none;
     
@@ -169,10 +177,7 @@ a{
 .row{
     display: flex;    
 }
-.countryCode{
- 
- 
-}
+
 .phone{
  width: 337px;
  margin-right: 10px;
@@ -209,7 +214,16 @@ a{
       border: none;
       font-size: 14px; /* Adjust font size for mobile */
     }
-  
+    .code{
+      width: 65%;
+        margin-left: 5px;
+        margin-bottom: 5px;
+    }
+   
+    .phonenumber{
+      
+      flex-direction: column;
+    }
     .plusBtnHide {
       display: none;
     }
@@ -260,7 +274,7 @@ a{
         margin-right: -40px; /* Adjust margin for mobile */
     }
   
-    .largeInput,  .DeviceInput{
+    .largeInput,  .DeviceInput ,.phone{
       width: 100%; /* Full width for mobile */
       margin-right: 5px; /* Adjust margin for mobile */
     }

@@ -21,6 +21,7 @@ export class CapturePhotoDialogComponentComponent {
   public webcamImage: WebcamImage | null = null;
   horizontalPosition: MatSnackBarHorizontalPosition = 'start';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+  
   constructor(private _snackBar: MatSnackBar,public dialogRef: MatDialogRef<CapturePhotoDialogComponentComponent>) {}
 
   public captureImage(): void {
@@ -28,10 +29,13 @@ export class CapturePhotoDialogComponentComponent {
   }
 
   public handleImage(webcamImage: WebcamImage): void {
+    const snackbarClass = 'snack-bar-custom';
+    const actionClass = 'snack-bar-action';
     this.webcamImage = webcamImage;
     this.adjustDialogHeight();
     this._snackBar.open('Image Taken Successfully', 'Close', {
       duration: this.durationInSeconds * 1000,
+      panelClass: [snackbarClass, actionClass]
     });
   }
 
@@ -48,16 +52,20 @@ export class CapturePhotoDialogComponentComponent {
   }
 
   openSnackBar() {
+    const snackbarClass = 'snack-bar-custom';
+    const actionClass = 'snack-bar-action';
     if(this.webcamImage){
       this._snackBar.open('Successfully Uploaded Photo', 'Close', {
-        duration: this.durationInSeconds * 1000,
+        // duration: this.durationInSeconds * 1000,
         horizontalPosition: this.horizontalPosition,
         verticalPosition: this.verticalPosition,
+        panelClass: [snackbarClass, actionClass]
       });
     }
     else{
       this._snackBar.open('Please upload your photo', 'Close', {
-        duration: this.durationInSeconds * 1000,
+        // duration: this.durationInSeconds * 1000,
+        panelClass: [snackbarClass, actionClass]
       });
     }
     }
