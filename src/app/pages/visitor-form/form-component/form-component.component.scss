@@ -204,6 +204,11 @@ a{
     margin-left:10px ;
 
 }
+::ng-deep  .ipv_selected-item{
+  height: 56px !important;
+    
+    border-radius: 5px !important;
+}
 @media screen and (max-width: 768px) {
     .astrik {
       color: red;

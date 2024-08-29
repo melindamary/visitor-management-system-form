@@ -115,8 +115,8 @@ export class FormComponentComponent {
   }
    fullPhoneNumber() {
     const Number = this.addvisitorForm.get('phoneNumber')?.value;
-    const fullNumber =this.countryCode+Number
-    console.log(this.countryCode+Number);   
+    const fullNumber =this.countryCode+"-"+Number
+    console.log(fullNumber);   
     this.addvisitorForm.patchValue({
       fullNumber:fullNumber
            // Clear other purpose field
