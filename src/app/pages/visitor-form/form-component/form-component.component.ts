@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy,ChangeDetectorRef,Component } from '@angular/core';
 import {  AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormsModule,isFormControl,ReactiveFormsModule, Validators } from '@angular/forms';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { IConfig, NgxCountriesDropdownModule } from 'ngx-countries-dropdown';
 import { Router, RouterLink } from '@angular/router';
 import { DataserviceService } from '../../../services/VisitorFormServices/dataservice.service';
@@ -71,7 +71,7 @@ export class FormComponentComponent {
  
 
   constructor(private apiService: DataserviceService,private imageCompress: NgxImageCompressService,
-    public dialog: MatDialog,private messageService: MessageService,
+    public dialog: MatDialog,private messageService: MessageService,private datePipe: DatePipe,
     private fb: FormBuilder,private router: Router,private cdr: ChangeDetectorRef) 
   {
     this.addvisitorForm = this.fb.group({
@@ -439,6 +439,12 @@ isFormValid(): boolean {
   const formData = this.addvisitorForm.value;
   return this.addvisitorForm.valid && formData.policy && this.capturedImage && localStorage.getItem('officeLocationId');
 }
+transformDate(): string {
+  // Use DatePipe to format the date
+  const date = new Date()
+  date.setHours(0, 0, 0, 0);
+  return this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm:ss') ?? '';
+}
 onSubmit(): void {
   const formData = this.addvisitorForm.value;
   const imageData = this.capturedImage;
@@ -447,6 +453,12 @@ onSubmit(): void {
   const officeLocationId = localStorage.getItem('officeLocationId');
   console.log('Purpose ID:', formData.purposeofvisitId);
   console.log('Form Data:', formData);
+   // This is a Date object
+
+  // Transform the date to the desired format
+  const formattedDate = this.transformDate();
+  console.log("formattedDate ", formattedDate);
+  
   if(!this.countryCode)
   {
     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Please fill the country code!' });
@@ -516,6 +528,7 @@ onSubmit(): void {
     officeLocationId: Number(officeLocationId),
     selectedDevice: selectedDevice,
     formSubmissionMode:formSubmissionMode,
+    visitDate:formattedDate,
     imageData: imageData
   };
 
