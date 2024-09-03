@@ -237,10 +237,11 @@ openDialog(): void {
   }
   onPurposeSelected(selectedOption: any): void {
     console.log('Selected purpose:', selectedOption);
-  
+    const value = selectedOption.purposeName;
     if (selectedOption.purposeName === 'Other') {
       this.isOtherPurposeSelected = true;
       this.addvisitorForm.patchValue({
+        purposeofvisit: value,
         purposeofvisitId: null, // Clear the purpose ID
         otherPurpose: ''       // Clear other purpose field
       });

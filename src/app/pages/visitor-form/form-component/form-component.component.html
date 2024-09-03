@@ -80,7 +80,7 @@
                   </mat-option>
                   <mat-option [value]="{ purposeName: 'Other', purposeId: null }">Other</mat-option>
               </mat-autocomplete> 
-              <mat-error *ngIf="addvisitorForm.get('purposeofvisitId')?.hasError('required')">
+              <mat-error *ngIf="addvisitorForm.get('purposeofvisit')?.hasError('required')">
                 *Required Field
               </mat-error>            
               </mat-form-field>          
