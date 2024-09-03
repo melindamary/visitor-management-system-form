@@ -56,7 +56,7 @@ export class CapturePhotoDialogComponentComponent {
     const actionClass = 'snack-bar-action';
     if(this.webcamImage){
       this._snackBar.open('Successfully Uploaded Photo', 'Close', {
-        // duration: this.durationInSeconds * 1000,
+        duration: this.durationInSeconds * 1000,
         horizontalPosition: this.horizontalPosition,
         verticalPosition: this.verticalPosition,
         panelClass: [snackbarClass, actionClass]
@@ -64,7 +64,7 @@ export class CapturePhotoDialogComponentComponent {
     }
     else{
       this._snackBar.open('Please upload your photo', 'Close', {
-        // duration: this.durationInSeconds * 1000,
+        duration: this.durationInSeconds * 1000,
         panelClass: [snackbarClass, actionClass]
       });
     }
